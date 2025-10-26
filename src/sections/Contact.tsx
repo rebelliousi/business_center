@@ -1,18 +1,39 @@
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
+import { useSendForm } from '../hooks/useSendForm';
+import { useVerifyEmail } from '../hooks/useVerifyEmail';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: '',
+    username: '',
+    gmail: '',
+    comment: '',
   });
+
+  // Modal için state
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
+  const [verifyData, setVerifyData] = useState({ gmail: '', verification_code: '' });
+
+  const { mutate, isPending, isSuccess, isError, error, reset } = useSendForm();
+  const {
+    mutate: verifyMutate,
+    isPending: isVerifying,
+    isSuccess: isVerifySuccess,
+    isError: isVerifyError,
+    error: verifyError,
+    reset: verifyReset,
+  } = useVerifyEmail();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
+    mutate(formData, {
+      onSuccess: () => {
+        setFormData({ username: '', gmail: '', comment: '' });
+        setVerifyData({ gmail: formData.gmail, verification_code: '' }); // default olarak formdaki gmail'i doldur
+        setShowVerifyModal(true);
+      },
+    });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -20,6 +41,27 @@ export default function Contact() {
       ...formData,
       [e.target.name]: e.target.value,
     });
+    if (isSuccess || isError) reset();
+  };
+
+  // Modal içindeki inputlar
+  const handleVerifyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setVerifyData({
+      ...verifyData,
+      [e.target.name]: e.target.value,
+    });
+    if (isVerifySuccess || isVerifyError) verifyReset();
+  };
+
+  const handleVerify = (e: React.FormEvent) => {
+    e.preventDefault();
+    verifyMutate(verifyData);
+  };
+
+  const closeModal = () => {
+    setShowVerifyModal(false);
+    verifyReset();
+    setVerifyData({ gmail: '', verification_code: '' });
   };
 
   return (
@@ -51,82 +93,83 @@ export default function Contact() {
               <h3 className="text-2xl font-bold text-gray-900 mb-6">Send us a message</h3>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
-                    Full Name
+                  <label htmlFor="username" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Name
                   </label>
                   <input
                     type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
+                    id="username"
+                    name="username"
+                    value={formData.username}
                     onChange={handleChange}
+                    placeholder="username"
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-none transition-all"
-                    placeholder="John Doe"
                     required
                   />
                 </div>
-
                 <div>
-                  <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
-                    Email Address
+                  <label htmlFor="gmail" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Gmail
                   </label>
                   <input
                     type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
+                    id="gmail"
+                    name="gmail"
+                    value={formData.gmail}
                     onChange={handleChange}
+                    placeholder="gmail"
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-none transition-all"
-                    placeholder="john@example.com"
                     required
                   />
                 </div>
-
                 <div>
-                  <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 mb-2">
-                    Subject
-                  </label>
-                  <input
-                    type="text"
-                    id="subject"
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-none transition-all"
-                    placeholder="How can we help?"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2">
-                    Message
+                  <label htmlFor="comment" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Comment
                   </label>
                   <textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
+                    id="comment"
+                    name="comment"
+                    value={formData.comment}
                     onChange={handleChange}
                     rows={5}
+                    placeholder="comment"
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-none transition-all resize-none"
-                    placeholder="Tell us more about your inquiry..."
                     required
                   />
                 </div>
+
+                {isSuccess && (
+                  <div className="text-blue-600 font-semibold">
+                    Message sent! Please verify your email.
+                  </div>
+                )}
+                {isError && (
+                  <div className="text-red-600 font-semibold">
+                    {typeof error === 'object' && error !== null && 'message' in error
+                      ? (error as any).message
+                      : "An error occurred. Please try again."}
+                  </div>
+                )}
 
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   type="submit"
-                  className="w-full bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors shadow-lg"
+                  className="w-full bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors shadow-lg disabled:opacity-60"
+                  disabled={isPending}
                 >
-                  Send Message
-                  <Send className="w-5 h-5" />
+                  {isPending ? (
+                    <span className="animate-spin h-5 w-5 border-b-2 border-white rounded-full" />
+                  ) : (
+                    <>
+                      Send Message
+                      <Send className="w-5 h-5" />
+                    </>
+                  )}
                 </motion.button>
               </form>
             </div>
           </motion.div>
-
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -251,6 +294,90 @@ export default function Contact() {
           </motion.div>
         </div>
       </div>
+
+      {/* Modal */}
+      {showVerifyModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full relative"
+          >
+            <button
+              onClick={closeModal}
+              className="absolute top-2 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold"
+              aria-label="Close"
+            >×</button>
+            <div className="flex flex-col items-center gap-2 mb-6">
+              <ShieldCheck className="w-10 h-10 text-blue-600" />
+              <h3 className="text-2xl font-bold">Verify Your Email</h3>
+              <p className="text-gray-600 text-center text-sm">
+                Please enter the verification code sent to your gmail address.
+              </p>
+            </div>
+            <form onSubmit={handleVerify} className="space-y-5">
+              <div>
+                <label htmlFor="gmail" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Gmail
+                </label>
+                <input
+                  type="email"
+                  id="gmail"
+                  name="gmail"
+                  value={verifyData.gmail}
+                  onChange={handleVerifyChange}
+                  placeholder="gmail"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-none transition-all"
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="verification_code" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Verification Code
+                </label>
+                <input
+                  type="text"
+                  id="verification_code"
+                  name="verification_code"
+                  value={verifyData.verification_code}
+                  onChange={handleVerifyChange}
+                  placeholder="verification_code"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-none transition-all"
+                  required
+                />
+              </div>
+              {isVerifySuccess && (
+                <div className="text-green-600 font-semibold">
+                  Verification successful!
+                </div>
+              )}
+              {isVerifyError && (
+                <div className="text-red-600 font-semibold">
+                  {typeof verifyError === 'object' && verifyError !== null && 'message' in verifyError
+                    ? (verifyError as any).message
+                    : "Verification failed. Please try again."}
+                </div>
+              )}
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                type="submit"
+                className="w-full bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors shadow-lg disabled:opacity-60"
+                disabled={isVerifying}
+              >
+                {isVerifying ? (
+                  <span className="animate-spin h-5 w-5 border-b-2 border-white rounded-full" />
+                ) : (
+                  <>
+                    Verify Email
+                    <ShieldCheck className="w-5 h-5" />
+                  </>
+                )}
+              </motion.button>
+            </form>
+          </motion.div>
+        </div>
+      )}
     </section>
   );
 }
