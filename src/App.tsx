@@ -1,5 +1,7 @@
 import { Header } from "./components/Navbar"
+import Courses from "./sections/Courses"
 import { Hero } from "./sections/Hero"
+import WhyChooseUs from "./sections/WhyChooseUs"
 
 
 export const App=()=>{
@@ -7,6 +9,8 @@ export const App=()=>{
    <div>
     <Header/>
     <Hero/>
+    <WhyChooseUs/>
+    <Courses/>
 
    </div>
   )
