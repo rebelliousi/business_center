@@ -37,7 +37,7 @@ export function Header() {
               <a
                 key={item.name}
                 href={item.href}
-                className="px-4 py-2 rounded-xl text-sm text-slate-600 hover:text-blue-600 hover:bg-blue-50 transition-all"
+                className="px-4 py-2 rounded-xl text-md text-slate-600 hover:text-blue-600 hover:bg-blue-50 transition-all"
               >
                 {item.name}
               </a>

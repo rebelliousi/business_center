@@ -1,67 +1,49 @@
 import { motion } from 'framer-motion';
-import { Clock, Users, Star, TrendingUp, PieChart, Lightbulb, Target, DollarSign, BarChart } from 'lucide-react';
+import {
+  Clock,
+  Users,
+  Star,
+  Target,
+ 
+  TrendingUp,
+  PieChart,
+  Lightbulb,
+  BarChart,
+  BookOpen,
+  Briefcase,
+  Activity,
+  Globe,
+  Compass,
+  Layers,
+  MessageCircle,
+  Shield,
+  Rocket,
+  Award,
+  ClipboardList,
+  Diamond,
+} from 'lucide-react';
+import { useCourses } from '../hooks/useCourses';
 
-const courses = [
-  {
-    id: 1,
-    title: 'Business Strategy Fundamentals',
-    description: 'Learn to develop and implement effective business strategies that drive growth and competitive advantage.',
-    icon: Target,
-    duration: '8 weeks',
-    students: '2,450',
-    rating: 4.8,
-    color: 'blue' as const,
-  },
-  {
-    id: 2,
-    title: 'Financial Management',
-    description: 'Master financial analysis, budgeting, and strategic financial decision-making for business success.',
-    icon: DollarSign,
-    duration: '10 weeks',
-    students: '1,890',
-    rating: 4.9,
-    color: 'green' as const,
-  },
-  {
-    id: 3,
-    title: 'Marketing & Growth',
-    description: 'Discover proven marketing strategies to acquire customers and scale your business effectively.',
-    icon: TrendingUp,
-    duration: '6 weeks',
-    students: '3,120',
-    rating: 4.7,
-    color: 'orange' as const,
-  },
-  {
-    id: 4,
-    title: 'Data-Driven Decision Making',
-    description: 'Use analytics and data insights to make informed business decisions that maximize results.',
-    icon: PieChart,
-    duration: '7 weeks',
-    students: '1,650',
-    rating: 4.8,
-    color: 'purple' as const,
-  },
-  {
-    id: 5,
-    title: 'Innovation & Entrepreneurship',
-    description: 'Transform ideas into viable businesses with proven frameworks for innovation and startup success.',
-    icon: Lightbulb,
-    duration: '9 weeks',
-    students: '2,200',
-    rating: 4.9,
-    color: 'yellow' as const,
-  },
-  {
-    id: 6,
-    title: 'Business Analytics',
-    description: 'Leverage business intelligence tools and techniques to extract actionable insights from data.',
-    icon: BarChart,
-    duration: '8 weeks',
-    students: '1,980',
-    rating: 4.7,
-    color: 'red' as const,
-  },
+// Otomatik icon atama için ikon listesi
+const iconList = [
+  Star,
+  Target,
+   Diamond,
+  TrendingUp,
+  PieChart,
+  Lightbulb,
+  BarChart,
+  BookOpen,
+  Briefcase,
+  Activity,
+  Globe,
+  Compass,
+  Layers,
+  MessageCircle,
+  Shield,
+  Rocket,
+  Award,
+  ClipboardList,
 ];
 
 const colorClasses = {
@@ -104,6 +86,21 @@ const colorClasses = {
 };
 
 export default function Courses() {
+  // React Query ile backend'den kurs verisini çekiyoruz
+  const { data: courses, isLoading, error } = useCourses();
+
+  if (isLoading) {
+    return (
+      <div className="text-center py-20">
+        <span className="inline-block animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div className="text-center text-red-500 py-20">Kurslar yüklenirken hata oluştu.</div>;
+  }
+
   return (
     <section id="courses" className="py-20 bg-gradient-to-b from-white to-blue-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -123,9 +120,10 @@ export default function Courses() {
         </motion.div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {courses.map((course, index) => {
-            const Icon = course.icon;
-            const colors = colorClasses[course.color];
+          {courses?.map((course, index) => {
+            const colors = colorClasses[course.color as keyof typeof colorClasses] || colorClasses.blue;
+            // icon otomatik atanıyor, backend'den alınmıyor!
+            const Icon = iconList[index % iconList.length];
 
             return (
               <motion.div
@@ -141,7 +139,7 @@ export default function Courses() {
                 <div
                   className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${colors.gradient} opacity-10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500`}
                 />
-                
+
                 <div className={`${colors.bg} w-16 h-16 rounded-xl flex items-center justify-center mb-6 relative z-10`}>
                   <Icon className={`w-8 h-8 ${colors.text}`} />
                 </div>
@@ -152,7 +150,11 @@ export default function Courses() {
                 <div className="flex items-center gap-4 text-sm text-gray-500 mb-4 relative z-10">
                   <div className="flex items-center gap-1">
                     <Clock className="w-4 h-4" />
-                    <span>{course.duration}</span>
+                    <span>
+                      {typeof course.duration_weeks === "number"
+                        ? `${course.duration_weeks} weeks`
+                        : course.duration_weeks}
+                    </span>
                   </div>
                   <div className="flex items-center gap-1">
                     <Users className="w-4 h-4" />
