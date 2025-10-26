@@ -1,25 +1,9 @@
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Tag, Calendar, ArrowRight, Sparkles } from 'lucide-react';
-import { getActiveDiscounts, type Discount } from '../components/supabase';
+import { useDiscounts } from '../hooks/useDiscounts'; // <-- yeni hook'u import et
 
 export default function Discounts() {
-  const [discounts, setDiscounts] = useState<Discount[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadDiscounts() {
-      try {
-        const data = await getActiveDiscounts();
-        setDiscounts(data);
-      } catch (error) {
-        console.error('Error loading discounts:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadDiscounts();
-  }, []);
+  const { data: discounts = [], isLoading: loading, error } = useDiscounts(); // <-- burada hook'u kullan
 
   return (
     <section className="py-20 px-4 bg-white">
@@ -53,7 +37,7 @@ export default function Discounts() {
           </div>
         ) : (
           <div className="grid md:grid-cols-2 gap-8">
-            {discounts.map((discount, index) => (
+            {discounts.map((discount: any, index: number) => (
               <motion.div
                 key={discount.id}
                 className="relative bg-gradient-to-br from-blue-500 to-blue-700 rounded-3xl overflow-hidden shadow-xl group"
@@ -110,7 +94,8 @@ export default function Discounts() {
                       <div className="w-48 h-48 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center">
                         <div className="text-center">
                           <div className="text-7xl font-bold text-white mb-2">
-                            {discount.discount_percentage}%
+                            {/* Eğer API'den discount_percentage geliyorsa göster, yoksa %50 örnek */}
+                            {discount.discount_percentage ?? 50}%
                           </div>
                           <div className="text-blue-100 text-lg font-semibold">OFF</div>
                         </div>
