@@ -1,7 +1,7 @@
 import { InfiniteScroll } from "./components/InfiniteScroll"
 import { Header } from "./components/Navbar"
 import About from "./sections/About"
-import BusinessAdvice from "./sections/Advice"
+import BusinessAdvice from "./sections/Advices"
 import Contact from "./sections/Contact"
 import Courses from "./sections/Courses"
 import Discounts from "./sections/Discount"

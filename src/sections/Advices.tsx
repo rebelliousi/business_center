@@ -3,7 +3,16 @@ import { motion } from "framer-motion";
 import { Check, Award, Users, Zap, Target, Trophy, Star } from "lucide-react";
 import { useAdvices, type AdviceType } from "../hooks/useAdvice";
 
-// icon stringinden doğru Lucide ikona eşleme
+// Ikon stringine göre gradient eşleme
+const gradientMap: Record<string, string> = {
+  "award": "from-blue-500 to-cyan-500",
+  "users": "from-purple-500 to-pink-500",
+  "zap": "from-orange-500 to-red-500",
+  "target": "from-green-500 to-emerald-500",
+  "trophy": "from-indigo-500 to-purple-500",
+  "star": "from-yellow-500 to-orange-500",
+};
+
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   "award": Award,
   "users": Users,
@@ -25,6 +34,9 @@ export default function BusinessAdvice() {
     );
   }
 
+  if (error) {
+    return <div className="text-center text-red-500 py-20">Advices yüklenirken hata oluştu.</div>;
+  }
 
   return (
     <section className="py-24 bg-gradient-to-b from-white to-slate-100 relative overflow-hidden">
@@ -51,6 +63,7 @@ export default function BusinessAdvice() {
         <div className="max-w-4xl mx-auto">
           {advices?.map((advice: AdviceType, index: number) => {
             const Icon = iconMap[advice.icon] || Award; // default ikon
+            const gradient = gradientMap[advice.icon] || "from-blue-500 to-cyan-500"; // default
             return (
               <motion.div
                 key={advice.id}
@@ -73,12 +86,12 @@ export default function BusinessAdvice() {
                   transition={{ duration: 0.5, delay: index * 0.1 + 0.2 }}
                   className="relative flex-shrink-0"
                 >
-                  <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${advice.gradient} p-1 shadow-lg`}>
+                  <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${gradient} p-1 shadow-lg`}>
                     <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
-                      <Icon className={`w-7 h-7 bg-gradient-to-br ${advice.gradient} bg-clip-text text-transparent`} />
+                      <Icon className={`w-7 h-7 bg-gradient-to-br ${gradient} bg-clip-text text-transparent`} />
                     </div>
                   </div>
-                  <div className={`absolute -right-1 -bottom-1 w-6 h-6 rounded-full bg-gradient-to-br ${advice.gradient} flex items-center justify-center`}>
+                  <div className={`absolute -right-1 -bottom-1 w-6 h-6 rounded-full bg-gradient-to-br ${gradient} flex items-center justify-center`}>
                     <Check className="w-4 h-4 text-white" />
                   </div>
                 </motion.div>
@@ -96,8 +109,8 @@ export default function BusinessAdvice() {
                       <h3 className="text-2xl font-bold text-slate-800 group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-cyan-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">
                         {advice.title}
                       </h3>
-                      <span className={`px-3 py-1 bg-gradient-to-r ${advice.gradient} text-white text-xs font-bold rounded-full`}>
-                        Step {advice.step}
+                      <span className={`px-3 py-1 bg-gradient-to-r ${gradient} text-white text-xs font-bold rounded-full`}>
+                        Step {advice.step || index + 1}
                       </span>
                     </div>
                     <p className="text-slate-600 leading-relaxed">
