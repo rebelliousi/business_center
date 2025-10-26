@@ -1,20 +1,27 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Linkedin, Award } from 'lucide-react';
+import { Linkedin, Award, ChevronDown, ChevronUp } from 'lucide-react';
 import { useTeachers, type TeacherType } from '../hooks/useTeachers';
 
 // Renkler
 const avatarColors = {
-  blue: '#3b82f6',
-  green: '#10b981',
-  orange: '#f59e0b',
-  purple: '#8b5cf6',
+blue:    "#3b82f6", // Tailwind blue-500
+  green:   "#10b981", // Tailwind green-500
+  orange:  "#f59e0b", // Tailwind amber-500
+  purple:  "#8b5cf6", // Tailwind purple-500
+  red:     "#ef4444", // Tailwind red-500
+  yellow:  "#eab308", // Tailwind yellow-500
+  teal:    "#14b8a6", // Tailwind teal-500
+  indigo:  "#6366f1", // Tailwind indigo-500
+  pink:    "#ec4899", // Tailwind pink-500
+  cyan:    "#06b6d4", // Tailwind cyan-500
 } as const;
 
 type AvatarColor = keyof typeof avatarColors;
 
 export default function Teachers() {
-  // Backend'den öğretmenleri çekiyoruz
   const { data: teachers, isLoading, error } = useTeachers();
+  const [showAll, setShowAll] = useState(false);
 
   if (isLoading) {
     return (
@@ -27,6 +34,8 @@ export default function Teachers() {
   if (error) {
     return <div className="text-center text-red-500 py-20">Öğretmenler yüklenirken hata oluştu.</div>;
   }
+
+  const displayedTeachers = showAll ? teachers : teachers?.slice(0, 4);
 
   return (
     <section id="teachers" className="py-20 bg-white">
@@ -47,8 +56,7 @@ export default function Teachers() {
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-8">
-          {teachers?.map((teacher: TeacherType, index: number) => {
-            // Eğer backend'den color alanı yanlış gelirse default renk ata
+          {displayedTeachers?.map((teacher: TeacherType, index: number) => {
             const color = (teacher.color in avatarColors ? teacher.color : 'blue') as AvatarColor;
 
             return (
@@ -103,6 +111,25 @@ export default function Teachers() {
             );
           })}
         </div>
+
+        {/* See All / Show Less Button */}
+        {teachers && teachers.length > 4 && (
+          <div className="text-center mt-12">
+            <motion.button
+              whileHover={{ scale: 1.06, y: -2 }}
+              whileTap={{ scale: 0.97 }}
+              className="inline-flex items-center gap-2 px-8 py-3 border-1 border-blue-600 text-blue-600 bg-transparent rounded-full font-semibold shadow hover:bg-blue-50 hover:text-blue-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              onClick={() => setShowAll((v) => !v)}
+            >
+              {showAll ? "Show less" : "See all"}
+              {showAll ? (
+                <ChevronUp className="w-5 h-5 ml-1" />
+              ) : (
+                <ChevronDown className="w-5 h-5 ml-1" />
+              )}
+            </motion.button>
+          </div>
+        )}
       </div>
     </section>
   );
