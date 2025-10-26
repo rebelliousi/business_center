@@ -2,57 +2,14 @@ import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { Star } from 'lucide-react';
-
-const testimonials = [
-  {
-    name: 'Jennifer Adams',
-    role: 'Marketing Director',
-    company: 'TechCorp',
-    text: 'The marketing courses completely transformed how I approach digital strategy. Highly recommended!',
-    rating: 5
-  },
-  {
-    name: 'Michael Chen',
-    role: 'Entrepreneur',
-    company: 'StartupHub',
-    text: 'Outstanding instructors and practical content. This platform helped me scale my business.',
-    rating: 5
-  },
-  {
-    name: 'Sarah Williams',
-    role: 'Finance Manager',
-    company: 'Global Finance',
-    text: 'The financial planning course gave me the tools to make better investment decisions.',
-    rating: 5
-  },
-  {
-    name: 'David Thompson',
-    role: 'Team Leader',
-    company: 'Innovation Labs',
-    text: 'Leadership training that actually works. My team performance has improved dramatically.',
-    rating: 5
-  },
-  {
-    name: 'Emily Rodriguez',
-    role: 'Operations Manager',
-    company: 'LogiTech',
-    text: 'The operations course helped me streamline processes and save thousands in costs.',
-    rating: 5
-  },
-  {
-    name: 'James Wilson',
-    role: 'Business Analyst',
-    company: 'DataPro',
-    text: 'Excellent analytics training. I can now make data-driven decisions with confidence.',
-    rating: 5
-  }
-];
+import { useComments,type  CommentType } from '../hooks/useComments'; // <-- Hook'u import et
 
 export function InfiniteScroll() {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { data: testimonials = [], isLoading, error } = useComments(); // <-- API'den veriyi al
 
   useEffect(() => {
-    if (!scrollRef.current) return;
+    if (!scrollRef.current || !testimonials.length) return;
 
     const items = scrollRef.current.children;
     const itemHeight = items[0]?.clientHeight || 0;
@@ -70,7 +27,23 @@ export function InfiniteScroll() {
         }
       }
     });
-  }, []);
+  }, [testimonials]); // testimonials değişince tekrar çalışsın
+
+  if (isLoading) {
+    return (
+      <div className="py-20 text-center">
+        <span className="inline-block animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="py-20 text-center text-red-500">
+        Yorumlar yüklenirken hata oluştu.
+      </div>
+    );
+  }
 
   const duplicatedTestimonials = [...testimonials, ...testimonials];
 
@@ -98,13 +71,13 @@ export function InfiniteScroll() {
 
           <div className="h-[600px] overflow-hidden">
             <div ref={scrollRef} className="space-y-6">
-              {duplicatedTestimonials.map((testimonial, index) => (
+              {duplicatedTestimonials.map((testimonial: CommentType, index: number) => (
                 <div
-                  key={index}
-                  className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-8 shadow-lg border border-blue-100"
+                  key={testimonial.id ?? index}
+                  className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl p-8 shadow-lg border border-blue-100"
                 >
                   <div className="flex items-center gap-1 mb-4">
-                    {Array.from({ length: testimonial.rating }).map((_, i) => (
+                    {Array.from({ length: Math.min(testimonial.rating, 5) }).map((_, i) => (
                       <Star key={i} className="w-5 h-5 text-yellow-500 fill-current" />
                     ))}
                   </div>
@@ -115,7 +88,7 @@ export function InfiniteScroll() {
 
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                      {testimonial.name.split(' ').map(n => n[0]).join('')}
+                      {testimonial.name?.split(' ').map(n => n[0]).join('')}
                     </div>
                     <div>
                       <div className="font-semibold text-gray-900">{testimonial.name}</div>
