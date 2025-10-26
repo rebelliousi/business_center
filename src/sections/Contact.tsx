@@ -3,6 +3,7 @@ import { Mail, Phone, MapPin, Send, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
 import { useSendForm } from '../hooks/useSendForm';
 import { useVerifyEmail } from '../hooks/useVerifyEmail';
+import ContactInfo from './ContactInfo';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -178,49 +179,11 @@ export default function Contact() {
             className="space-y-8"
           >
             <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Contact Information</h3>
+            
               <div className="space-y-6">
-                <motion.div
-                  whileHover={{ x: 8 }}
-                  className="flex items-start gap-4 bg-white p-6 rounded-xl shadow-md"
-                >
-                  <div className="bg-blue-100 p-3 rounded-lg shrink-0">
-                    <Mail className="w-6 h-6 text-blue-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-1">Email</h4>
-                    <p className="text-gray-600">info@businessedu.com</p>
-                    <p className="text-gray-600">support@businessedu.com</p>
-                  </div>
-                </motion.div>
-
-                <motion.div
-                  whileHover={{ x: 8 }}
-                  className="flex items-start gap-4 bg-white p-6 rounded-xl shadow-md"
-                >
-                  <div className="bg-green-100 p-3 rounded-lg shrink-0">
-                    <Phone className="w-6 h-6 text-green-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-1">Phone</h4>
-                    <p className="text-gray-600">+1 (555) 123-4567</p>
-                    <p className="text-gray-600">Mon-Fri 9am-6pm EST</p>
-                  </div>
-                </motion.div>
-
-                <motion.div
-                  whileHover={{ x: 8 }}
-                  className="flex items-start gap-4 bg-white p-6 rounded-xl shadow-md"
-                >
-                  <div className="bg-orange-100 p-3 rounded-lg shrink-0">
-                    <MapPin className="w-6 h-6 text-orange-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-1">Office</h4>
-                    <p className="text-gray-600">123 Business Avenue</p>
-                    <p className="text-gray-600">New York, NY 10001</p>
-                  </div>
-                </motion.div>
+               <motion.div>
+                <ContactInfo/>
+               </motion.div>
               </div>
             </div>
 
