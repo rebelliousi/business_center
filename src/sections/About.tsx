@@ -1,7 +1,31 @@
 import { motion } from 'framer-motion';
 import { Target, Eye, Heart, Users, Zap, Globe } from 'lucide-react';
+import { useAbout } from '../hooks/useAbout';
 
 export default function About() {
+  const { data: aboutArr, isLoading, error } = useAbout();
+  const about = aboutArr?.[0]; // API'dan array geliyorsa ilk elemanı al
+
+  if (isLoading) {
+    return (
+      <section className="py-16 px-4 bg-gradient-to-br from-blue-50 via-white to-blue-50">
+        <div className="max-w-7xl mx-auto text-center py-32">
+          <span className="inline-block animate-spin h-10 w-10 border-4 border-blue-600 border-t-transparent rounded-full" />
+        </div>
+      </section>
+    );
+  }
+
+  if (error || !about) {
+    return (
+      <section className="py-16 px-4 bg-gradient-to-br from-blue-50 via-white to-blue-50">
+        <div className="max-w-7xl mx-auto text-center py-32">
+          <p className="text-lg text-red-500">About bilgileri yüklenirken bir hata oluştu.</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="about" className="py-16 px-4 bg-gradient-to-br from-blue-50 via-white to-blue-50">
       <div className="max-w-7xl mx-auto">
@@ -12,28 +36,23 @@ export default function About() {
           viewport={{ once: true }}
         >
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-            About <span className="text-blue-600">Our Platform</span>
+            {about.main_title}
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Empowering professionals worldwide with world-class business education
+            {about.main_subtitle}
           </p>
         </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
-          {/* Sol taraf - Önceki sağdaki yazılı içerik */}
+          {/* Sol taraf - Dinamik içerik */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-           
-           
             <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-              Founded in 2020, EduBusiness has grown to become the world's leading
-              online business education platform. Our mission is to democratize
-              access to world-class business education and empower professionals
-              worldwide to achieve their career goals.
+              {about.main_body}
             </p>
 
             <div className="space-y-6">
@@ -43,11 +62,10 @@ export default function About() {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">
-                    Our Mission
+                    {about.mission_title}
                   </h3>
                   <p className="text-gray-600">
-                    To make premium business education accessible to everyone,
-                    everywhere, and transform careers through practical learning.
+                    {about.mission_text}
                   </p>
                 </div>
               </div>
@@ -58,11 +76,10 @@ export default function About() {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">
-                    Our Vision
+                    {about.vision_title}
                   </h3>
                   <p className="text-gray-600">
-                    To become the global standard for online business education
-                    and create a community of successful entrepreneurs and leaders.
+                    {about.vision_text}
                   </p>
                 </div>
               </div>
@@ -73,18 +90,17 @@ export default function About() {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">
-                    Our Values
+                    {about.values_title}
                   </h3>
                   <p className="text-gray-600">
-                    Excellence, innovation, accessibility, and student success
-                    guide everything we do. We're committed to your growth.
+                    {about.values_text}
                   </p>
                 </div>
               </div>
             </div>
           </motion.div>
 
-          {/* Sağ taraf - İllüstrasyon */}
+          {/* Sağ taraf - İllüstrasyon, sabit */}
           <motion.div
             className="relative"
             initial={{ opacity: 0, x: 50 }}
@@ -157,9 +173,6 @@ export default function About() {
             </svg>
           </motion.div>
         </div>
-
-        
-        
       </div>
     </section>
   );
