@@ -79,7 +79,7 @@ export function Hero() {
           >
             <Button 
               size="lg" 
-              className="rounded-full px-8 py-6 text-lg bg-gradient-to-r from-blue-600 to-blue-500 hover:shadow-2xl hover:shadow-blue-500/40 transition-all group"
+              className="rounded-full px-8 py-6 text-lg bg-gradient-to-r from-blue-500 to-blue-500 text-white hover:shadow-2xl hover:shadow-blue-500/40 transition-all group"
             >
               Start Learning
               <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
