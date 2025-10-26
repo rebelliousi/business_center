@@ -1,10 +1,10 @@
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Clock,
   Users,
   Star,
   Target,
- 
   TrendingUp,
   PieChart,
   Lightbulb,
@@ -21,6 +21,9 @@ import {
   Award,
   ClipboardList,
   Diamond,
+  ChevronDown,
+  ChevronUp,
+  X,
 } from 'lucide-react';
 import { useCourses } from '../hooks/useCourses';
 
@@ -28,7 +31,7 @@ import { useCourses } from '../hooks/useCourses';
 const iconList = [
   Star,
   Target,
-   Diamond,
+  Diamond,
   TrendingUp,
   PieChart,
   Lightbulb,
@@ -86,8 +89,9 @@ const colorClasses = {
 };
 
 export default function Courses() {
-  // React Query ile backend'den kurs verisini çekiyoruz
   const { data: courses, isLoading, error } = useCourses();
+  const [showAll, setShowAll] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<any | null>(null);
 
   if (isLoading) {
     return (
@@ -100,6 +104,9 @@ export default function Courses() {
   if (error) {
     return <div className="text-center text-red-500 py-20">Kurslar yüklenirken hata oluştu.</div>;
   }
+
+  // Gösterilecek kurslar (8 veya tamamı)
+  const displayedCourses = showAll ? courses : courses?.slice(0, 8);
 
   return (
     <section id="courses" className="py-20 bg-gradient-to-b from-white to-blue-50">
@@ -120,9 +127,8 @@ export default function Courses() {
         </motion.div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {courses?.map((course, index) => {
+          {displayedCourses?.map((course, index) => {
             const colors = colorClasses[course.color as keyof typeof colorClasses] || colorClasses.blue;
-            // icon otomatik atanıyor, backend'den alınmıyor!
             const Icon = iconList[index % iconList.length];
 
             return (
@@ -135,7 +141,6 @@ export default function Courses() {
                 whileHover={{ y: -8 }}
                 className={`bg-white rounded-2xl p-8 shadow-lg border-2 border-transparent ${colors.hover} transition-all cursor-pointer relative overflow-hidden group`}
               >
-                {/* Decorative gradient circle */}
                 <div
                   className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${colors.gradient} opacity-10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500`}
                 />
@@ -167,7 +172,10 @@ export default function Courses() {
                     <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
                     <span className="font-semibold text-gray-900">{course.rating}</span>
                   </div>
-                  <button className={`${colors.text} font-semibold hover:underline`}>
+                  <button
+                    className={`${colors.text} font-semibold hover:underline`}
+                    onClick={() => setSelectedCourse(course)}
+                  >
                     Learn More →
                   </button>
                 </div>
@@ -175,6 +183,78 @@ export default function Courses() {
             );
           })}
         </div>
+
+        {/* See All / Show Less Button */}
+        {courses && courses.length > 8 && (
+          <div className="text-center mt-12">
+            <motion.button
+              whileHover={{ scale: 1.06, y: -2 }}
+              whileTap={{ scale: 0.97 }}
+              className="inline-flex items-center gap-2 px-8 py-3 border-2 border-blue-600 text-blue-600 bg-transparent rounded-full font-semibold shadow hover:bg-blue-50 hover:text-blue-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              onClick={() => setShowAll((v) => !v)}
+            >
+              {showAll ? "Show less" : "See all"}
+              {showAll ? (
+                <ChevronUp className="w-5 h-5 ml-1" />
+              ) : (
+                <ChevronDown className="w-5 h-5 ml-1" />
+              )}
+            </motion.button>
+          </div>
+        )}
+
+        {/* Modal */}
+        <AnimatePresence>
+          {selectedCourse && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 flex items-center justify-center"
+            >
+              {/* Modal Arka planı */}
+              <div
+                className="absolute inset-0 bg-gradient-to-br from-blue-300/40 via-blue-900/50 to-blue-500/70 backdrop-blur-[2px]"
+                onClick={() => setSelectedCourse(null)}
+              />
+              {/* Modal İçerik */}
+              <motion.div
+                initial={{ scale: 0.96, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.96, opacity: 0 }}
+                transition={{ type: "spring", stiffness: 300, damping: 24 }}
+                className="relative z-10 bg-white rounded-2xl shadow-2xl p-8 max-w-lg w-full"
+              >
+                <button
+                  className="absolute top-2 right-4 text-gray-400 hover:text-gray-700 text-2xl"
+                  onClick={() => setSelectedCourse(null)}
+                  aria-label="Close"
+                >
+                  <X />
+                </button>
+                <div className="mb-6">
+                  <h3 className="text-2xl font-bold text-blue-900 mb-2">{selectedCourse.title}</h3>
+                  <p className="text-gray-700 mb-6">{selectedCourse.description}</p>
+                  <div className="flex items-center gap-4 mb-4">
+                    <span className="flex items-center gap-1 text-gray-500">
+                      <Clock className="w-4 h-4" /> {selectedCourse.duration_weeks} weeks
+                    </span>
+                    <span className="flex items-center gap-1 text-gray-500">
+                      <Users className="w-4 h-4" /> {selectedCourse.students} students
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 mb-4">
+                    <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                    <span className="font-semibold text-gray-900">{selectedCourse.rating}</span>
+                  </div>
+                  <div className="text-xl font-semibold text-blue-700 mb-2">
+                    Price: {selectedCourse.price ? `${selectedCourse.price} TMT` : 'Free'}
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </section>
   );

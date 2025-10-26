@@ -13,6 +13,7 @@ export interface CourseType {
   color: string;
   image: string;
   is_active: boolean;
+  price:string
 }
 
 // Kursları çeken fonksiyon
