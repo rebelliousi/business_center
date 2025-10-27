@@ -61,5 +61,16 @@ export const tk = {
     students: "{{count}} talyp",
     price: "Bahasy",
     free: "Pulsuz"
+  },
+  teachers: {
+    title: "Hünärmen <1>mugallymlarymyz</1> bilen tanyşyň",
+    subtitle: "Köp ýyllyk hakyky tejribesi we öwretmäge höwesi bolan hünärmenlerden bilim alyň.",
+    expertise: "Ugry",
+    experience: "{{count}} ýyl tejribe",
+    viewProfile: "Profili gör",
+    showAll: "Hemmesini gör",
+    showLess: "Az görkez",
+    loading: "Mugallymlar ýüklenýär...",
+    error: "Mugallymlar ýüklenende näsazlyk ýüze çykdy."
   }
 };

@@ -62,6 +62,17 @@ export const en = {
     students: "{{count}} students",
     price: "Price",
     free: "Free"
+  },
+  teachers: {
+    title: "Meet Our <1>Expert Instructors</1>",
+    subtitle: "Learn from industry leaders with decades of real-world experience and a passion for teaching.",
+    expertise: "Expertise",
+    experience: "{{count}} years experience",
+    viewProfile: "View Profile",
+    showAll: "See all",
+    showLess: "Show less",
+    loading: "Loading instructors...",
+    error: "An error occurred while loading instructors."
   }
 };
 ;

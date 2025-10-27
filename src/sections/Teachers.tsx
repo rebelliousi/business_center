@@ -2,19 +2,19 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Linkedin, Award, ChevronDown, ChevronUp } from 'lucide-react';
 import { useTeachers, type TeacherType } from '../hooks/useTeachers';
+import { useTranslation, Trans } from 'react-i18next';
 
-// Renkler
 const avatarColors = {
-blue:    "#3b82f6", // Tailwind blue-500
-  green:   "#10b981", // Tailwind green-500
-  orange:  "#f59e0b", // Tailwind amber-500
-  purple:  "#8b5cf6", // Tailwind purple-500
-  red:     "#ef4444", // Tailwind red-500
-  yellow:  "#eab308", // Tailwind yellow-500
-  teal:    "#14b8a6", // Tailwind teal-500
-  indigo:  "#6366f1", // Tailwind indigo-500
-  pink:    "#ec4899", // Tailwind pink-500
-  cyan:    "#06b6d4", // Tailwind cyan-500
+  blue:    "#3b82f6",
+  green:   "#10b981",
+  orange:  "#f59e0b",
+  purple:  "#8b5cf6",
+  red:     "#ef4444",
+  yellow:  "#eab308",
+  teal:    "#14b8a6",
+  indigo:  "#6366f1",
+  pink:    "#ec4899",
+  cyan:    "#06b6d4",
 } as const;
 
 type AvatarColor = keyof typeof avatarColors;
@@ -22,17 +22,19 @@ type AvatarColor = keyof typeof avatarColors;
 export default function Teachers() {
   const { data: teachers, isLoading, error } = useTeachers();
   const [showAll, setShowAll] = useState(false);
+  const { t } = useTranslation();
 
   if (isLoading) {
     return (
       <div className="text-center py-20">
         <span className="inline-block animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full" />
+        <div className="mt-4 text-blue-600 font-semibold">{t("teachers.loading")}</div>
       </div>
     );
   }
 
   if (error) {
-    return <div className="text-center text-red-500 py-20">Öğretmenler yüklenirken hata oluştu.</div>;
+    return <div className="text-center text-red-500 py-20">{t("teachers.error")}</div>;
   }
 
   const displayedTeachers = showAll ? teachers : teachers?.slice(0, 4);
@@ -48,17 +50,18 @@ export default function Teachers() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-            Meet Our <span className="text-blue-600">Expert Instructors</span>
+            <Trans i18nKey="teachers.title">
+              Meet Our <span className="text-blue-600">Expert Instructors</span>
+            </Trans>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Learn from industry leaders with decades of real-world experience and a passion for teaching.
+            {t("teachers.subtitle")}
           </p>
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-8">
           {displayedTeachers?.map((teacher: TeacherType, index: number) => {
             const color = (teacher.color in avatarColors ? teacher.color : 'blue') as AvatarColor;
-
             return (
               <motion.div
                 key={teacher.id}
@@ -94,16 +97,16 @@ export default function Teachers() {
                     <p className="text-blue-600 font-semibold mb-2">{teacher.role}</p>
                     <div className="flex items-center gap-2 text-sm text-gray-600 mb-3">
                       <Award className="w-4 h-4" />
-                      <span>{teacher.experience} experience</span>
+                    <span>{t("teachers.experience", { count: Number(teacher.experience) })}</span>
                     </div>
                     <div className="bg-white rounded-lg p-3 mb-3">
-                      <p className="text-sm font-semibold text-gray-700 mb-1">Expertise:</p>
+                      <p className="text-sm font-semibold text-gray-700 mb-1">{t("teachers.expertise")}:</p>
                       <p className="text-sm text-gray-600">{teacher.expertise}</p>
                     </div>
                     <p className="text-gray-600 mb-4 leading-relaxed">{teacher.description}</p>
                     <button className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold transition-colors">
                       <Linkedin className="w-5 h-5" />
-                      <span>View Profile</span>
+                      <span>{t("teachers.viewProfile")}</span>
                     </button>
                   </div>
                 </div>
@@ -121,7 +124,7 @@ export default function Teachers() {
               className="inline-flex items-center gap-2 px-8 py-3 border-1 border-blue-600 text-blue-600 bg-transparent rounded-full font-semibold shadow hover:bg-blue-50 hover:text-blue-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
               onClick={() => setShowAll((v) => !v)}
             >
-              {showAll ? "Show less" : "See all"}
+              {showAll ? t("teachers.showLess") : t("teachers.showAll")}
               {showAll ? (
                 <ChevronUp className="w-5 h-5 ml-1" />
               ) : (
