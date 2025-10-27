@@ -1,8 +1,13 @@
 import { Button } from '../components/HeroButton';
-import { ArrowRight, Sparkles, Play } from 'lucide-react';
+import { ArrowRight, Sparkles, Contact } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTranslation } from "react-i18next";
 
 export function Hero() {
+  const { t } = useTranslation();
+  // stats array'sini i18next'ten array olarak çek
+  const stats = t("stats", { returnObjects: true }) as { value: string, label: string }[];
+
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-white">
       {/* Animated background elements */}
@@ -45,9 +50,8 @@ export function Hero() {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-200 mb-8"
           >
             <Sparkles className="w-4 h-4 text-blue-600" />
-            <span className="text-sm text-blue-700">Elevate Your Business Skills</span>
+            <span className="text-sm text-blue-700">{t("badge")}</span>
           </motion.div>
-
           {/* Main heading */}
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
@@ -55,21 +59,18 @@ export function Hero() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="text-6xl md:text-8xl mb-6 tracking-tight text-blue-950"
           >
-            Master the
+            {t("heading1")}
             <br />
-            <span className="text-blue-gradient">Future of Business</span>
+            <span className="text-blue-gradient">{t("heading2")}</span>
           </motion.h1>
-
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-xl md:text-2xl text-slate-600 mb-12 max-w-3xl mx-auto"
           >
-            Learn from industry leaders. Build real-world skills. 
-            Transform your career with cutting-edge business education.
+            {t("desc")}
           </motion.p>
-
           {/* CTA Buttons */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -78,22 +79,27 @@ export function Hero() {
             className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20"
           >
             <Button 
+              onClick={() => {
+                document.getElementById('courses')?.scrollIntoView({ behavior: 'smooth' });
+              }}
               size="lg" 
               className="rounded-full px-8 py-6 text-lg bg-gradient-to-r from-blue-500 to-blue-500 text-white hover:shadow-2xl hover:shadow-blue-500/40 transition-all group"
             >
-              Start Learning
+              {t("startLearning")}
               <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
             <Button 
+              onClick={() => {
+                document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+              }}
               size="lg" 
               variant="outline"
               className="rounded-full px-8 py-6 text-lg border-2 border-blue-200 hover:bg-blue-50 hover:border-blue-300 text-blue-700"
             >
-              <Play className="w-5 h-5 mr-2" />
-              Watch Demo
+              <Contact className="w-5 h-5 mr-2" />
+              {t("contactUs")}
             </Button>
           </motion.div>
-
           {/* Stats */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -101,12 +107,7 @@ export function Hero() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-3xl mx-auto"
           >
-            {[
-              { value: '50K+', label: 'Active Students' },
-              { value: '200+', label: 'Expert Courses' },
-              { value: '95%', label: 'Success Rate' },
-              { value: '4.9/5', label: 'Avg Rating' },
-            ].map((stat, index) => (
+            {Array.isArray(stats) && stats.map((stat, index) => (
               <motion.div
                 key={stat.label}
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -123,7 +124,6 @@ export function Hero() {
           </motion.div>
         </div>
       </div>
-
       {/* Scroll indicator */}
       <motion.div
         animate={{ y: [0, 10, 0] }}

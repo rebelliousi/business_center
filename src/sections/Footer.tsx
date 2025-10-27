@@ -1,4 +1,4 @@
-import { Zap, Github, Twitter, Linkedin, Instagram, Music2 } from 'lucide-react';
+import { Zap, Github, Twitter, Linkedin, Instagram, Music2, BookOpen } from 'lucide-react';
 import { useFooterData } from '../hooks/useFooter';
 
 export function Footer() {
@@ -31,10 +31,10 @@ export function Footer() {
       <div className="container mx-auto px-4 py-16 flex flex-col items-center justify-center">
         <a href="#home" className="flex items-center gap-2 mb-4">
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center shadow-lg shadow-blue-500/30">
-            <Zap className="w-6 h-6 text-white" />
+            <BookOpen className="w-6 h-6 text-white" />
           </div>
           <span className="text-2xl tracking-tight text-blue-900 font-semibold">
-            {footer?.name || 'Academy'}
+            {footer?.name || 'Ýokary tehnologiýalaryň işewürligi'}
           </span>
         </a>
         <p className="text-slate-600 mb-8 max-w-xl text-center leading-relaxed">
