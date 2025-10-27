@@ -72,5 +72,13 @@ export const tk = {
     showLess: "Az görkez",
     loading: "Mugallymlar ýüklenýär...",
     error: "Mugallymlar ýüklenende näsazlyk ýüze çykdy."
+  },
+   advice: {
+    badge: "Biznes maslahatlary",
+    title: "Biznesde üstünlik üçin peýdaly maslahatlar",
+    subtitle: "Hakyky iş tejribesine esaslanýan biznes maslahatlarymyz bilen tanşyň",
+    step: "{{count}}-nji ädim",
+    loading: "Maslahatlar ýüklenýär...",
+    error: "Maslahatlar ýüklenende näsazlyk ýüze çykdy."
   }
 };

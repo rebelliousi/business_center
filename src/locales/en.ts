@@ -73,6 +73,14 @@ export const en = {
     showLess: "Show less",
     loading: "Loading instructors...",
     error: "An error occurred while loading instructors."
+  },
+  advice: {
+    badge: "Business Advice",
+    title: "Helpful Tips for Success in Business",
+    subtitle: "Discover our business advice based on real-world experience",
+    step: "Step {{count}}",
+    loading: "Loading advices...",
+    error: "An error occurred while loading advices."
   }
 };
 ;
