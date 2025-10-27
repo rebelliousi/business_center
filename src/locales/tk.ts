@@ -80,5 +80,54 @@ export const tk = {
     step: "{{count}}-nji ädim",
     loading: "Maslahatlar ýüklenýär...",
     error: "Maslahatlar ýüklenende näsazlyk ýüze çykdy."
+  },
+   comments: {
+    title: "Talypalarymyzyň pikirleri",
+    subtitle: "Kärýerasyny üýtgeden müňlerçe hünärmenlere goşulyň",
+    loading: "Teswirler ýüklenýär...",
+    error: "Teswirler ýüklenende näsazlyk ýüze çykdy.",
+    at: "–"
+  },
+  discounts: {
+    badge: "Çäkli wagtly teklipler",
+    cardBadge: "Ýörite teklip",
+    title: "Ýörite <1>arzanladyşlar</1>",
+    subtitle: "Eksklýuziw tekliplerimizden peýdalanyň we bilim ýoluna şu gün başlaň",
+    validUntil: "{{date}} çenli hereket edýär",
+    claim: "Teklipi al",
+    off: "ARZAN",
+    noActive: "Häzirki wagtda arzanladyş ýok. Ýakynda barlaň!",
+    loading: "Arzanladyşlar ýüklenýär...",
+    error: "Arzanladyşlar ýüklenende näsazlyk ýüze çykdy."
+  },
+   about: {
+    loading: "Habar maglumatlary ýüklenýär...",
+    error: "Habar maglumatlary ýüklenende näsazlyk ýüze çykdy."
+  },
+  contact: {
+    title: "Biziň bilen <1>habarlaşyň</1>",
+    subtitle: "Soraglaryňyz barmy? Biz size kömek etmäge taýýar. Bize habar ýollaň, mümkin boldugyça çalt jogap bereris.",
+    sendMessage: "Bize hat ýollaň",
+    name: "Ady",
+    gmail: "Gmail",
+    comment: "Teswir",
+    send: "Ugrat",
+    sending: "Ugradylýar...",
+    sent: "Ugradyldy! E-poçtaňyzy tassyklaň.",
+    error: "Näsazlyk ýüze çykdy. Täzeden synanyşyň.",
+    verifyTitle: "E-poçtaňyzy tassyklaň",
+    verifyPrompt: "E-poçtaňyza iberilen tassyklama koduny giriziň.",
+    code: "Tassyklama kody",
+    verify: "E-poçtaňyzy tassyklaň",
+    verifying: "Tassyklanýar...",
+    verifySuccess: "Tassyklandy!",
+    verifyError: "Tassyklamak başartmady. Täzeden synanyşyň.",
+    specialOffer: "Ýörite teklip"
+  },
+  footer: {
+    loading: "Ýüklenýär...",
+    error: "Habarlaşmak maglumatlary ýüklenmedi.",
+    description: "Geljekki işewür liderleri dünýä derejesindäki bilim bilen güýçlendirýäris.",
+    copyright: "Ähli hukuklar goralan."
   }
 };

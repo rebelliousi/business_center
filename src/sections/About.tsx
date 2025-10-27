@@ -1,16 +1,19 @@
 import { motion } from 'framer-motion';
 import { Target, Eye, Heart, Users, Zap, Globe } from 'lucide-react';
 import { useAbout } from '../hooks/useAbout';
+import { useTranslation } from "react-i18next";
 
 export default function About() {
   const { data: aboutArr, isLoading, error } = useAbout();
-  const about = aboutArr?.[0]; // API'dan array geliyorsa ilk elemanı al
+  const about = aboutArr?.[0];
+  const { t } = useTranslation();
 
   if (isLoading) {
     return (
       <section className="py-16 px-4 bg-gradient-to-br from-blue-50 via-white to-blue-50">
         <div className="max-w-7xl mx-auto text-center py-32">
           <span className="inline-block animate-spin h-10 w-10 border-4 border-blue-600 border-t-transparent rounded-full" />
+          <div className="mt-4 text-blue-600 font-semibold">{t("about.loading")}</div>
         </div>
       </section>
     );
@@ -20,7 +23,7 @@ export default function About() {
     return (
       <section className="py-16 px-4 bg-gradient-to-br from-blue-50 via-white to-blue-50">
         <div className="max-w-7xl mx-auto text-center py-32">
-          <p className="text-lg text-red-500">About bilgileri yüklenirken bir hata oluştu.</p>
+          <p className="text-lg text-red-500">{t("about.error")}</p>
         </div>
       </section>
     );

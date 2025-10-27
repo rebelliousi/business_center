@@ -1,8 +1,15 @@
 import { motion } from 'framer-motion';
 import { Tag, Calendar, ArrowRight, Sparkles } from 'lucide-react';
 import { useDiscounts } from '../hooks/useDiscounts';
+import { useTranslation, Trans } from "react-i18next";
 
 function DiscountCard({ discount, index }: { discount: any; index: number }) {
+  const { t, i18n } = useTranslation();
+  // Lokalizasyonlu tarih formatlama
+  const formattedDate = discount.valid_until
+    ? new Date(discount.valid_until).toLocaleDateString(i18n.language)
+    : "";
+
   return (
     <motion.div
       className="relative bg-gradient-to-br from-blue-500 to-blue-700 rounded-3xl overflow-hidden shadow-xl group"
@@ -23,7 +30,7 @@ function DiscountCard({ discount, index }: { discount: any; index: number }) {
               transition={{ duration: 2, repeat: Infinity }}
             >
               <Tag className="w-4 h-4" />
-              <span className="text-sm font-semibold">Special Offer</span>
+              <span className="text-sm font-semibold">{t('discounts.cardBadge')}</span>
             </motion.div>
 
             <h3 className="text-3xl font-bold text-white mb-3">
@@ -36,7 +43,9 @@ function DiscountCard({ discount, index }: { discount: any; index: number }) {
 
             <div className="flex items-center gap-2 text-blue-100 mb-6">
               <Calendar className="w-5 h-5" />
-              <span>Valid until {new Date(discount.valid_until).toLocaleDateString()}</span>
+              <span>
+                {t('discounts.validUntil', { date: formattedDate })}
+              </span>
             </div>
           </div>
 
@@ -45,7 +54,7 @@ function DiscountCard({ discount, index }: { discount: any; index: number }) {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            Claim Offer
+            {t('discounts.claim')}
             <ArrowRight className="w-5 h-5" />
           </motion.button>
         </div>
@@ -61,7 +70,7 @@ function DiscountCard({ discount, index }: { discount: any; index: number }) {
                 <div className="text-7xl font-bold text-white mb-2">
                   {discount.discount_percentage ?? 50}%
                 </div>
-                <div className="text-blue-100 text-lg font-semibold">OFF</div>
+                <div className="text-blue-100 text-lg font-semibold">{t("discounts.off")}</div>
               </div>
             </div>
 
@@ -97,6 +106,7 @@ function DiscountCard({ discount, index }: { discount: any; index: number }) {
 
 export default function Discounts() {
   const { data: discounts = [], isLoading: loading, error } = useDiscounts();
+  const { t } = useTranslation();
 
   // Kartlar 5 taneyse özel dizilim uygulanır
   const isFive = discounts.length === 5;
@@ -116,21 +126,26 @@ export default function Discounts() {
             transition={{ duration: 2, repeat: Infinity }}
           >
             <Sparkles className="w-5 h-5" />
-            <span className="font-semibold">Limited Time Offers</span>
+            <span className="font-semibold">{t('discounts.badge')}</span>
           </motion.div>
 
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-            Special <span className="text-blue-600">Discounts</span>
+            <Trans i18nKey="discounts.title">
+              Special <span className="text-blue-600">Discounts</span>
+            </Trans>
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Take advantage of our exclusive offers and start your learning journey today
+            {t('discounts.subtitle')}
           </p>
         </motion.div>
 
         {loading ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div className="mt-4 text-blue-600 font-semibold">{t('discounts.loading')}</div>
           </div>
+        ) : error ? (
+          <div className="text-center py-12 text-red-500">{t('discounts.error')}</div>
         ) : (
           <>
             {isFive ? (
@@ -163,11 +178,10 @@ export default function Discounts() {
 
         {!loading && discounts.length === 0 && (
           <div className="text-center py-12 bg-gray-50 rounded-2xl">
-            <p className="text-gray-500 text-lg">No active discounts at the moment. Check back soon!</p>
+            <p className="text-gray-500 text-lg">{t('discounts.noActive')}</p>
           </div>
         )}
 
-       
       </div>
     </section>
   );

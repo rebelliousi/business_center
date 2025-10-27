@@ -1,10 +1,11 @@
 import { Zap, Github, Twitter, Linkedin, Instagram, Music2, BookOpen } from 'lucide-react';
 import { useFooterData } from '../hooks/useFooter';
+import { useTranslation } from "react-i18next";
 
 export function Footer() {
   const { data: footer, isLoading, error } = useFooterData();
+  const { t } = useTranslation();
 
-  // Dinamik sosyal medya linkleri (Instagram ve TikTok)
   const dynamicSocialLinks = [
     footer?.instagram && {
       icon: Instagram,
@@ -14,7 +15,7 @@ export function Footer() {
       label: 'Instagram',
     },
     footer?.tiktok && {
-      icon: Music2, // TikTok için uygun bir ikon (lucide-react Music2)
+      icon: Music2,
       href: footer.tiktok.startsWith('http')
         ? footer.tiktok
         : `https://tiktok.com/@${footer.tiktok.replace(/^@/, '')}`,
@@ -39,10 +40,10 @@ export function Footer() {
         </a>
         <p className="text-slate-600 mb-8 max-w-xl text-center leading-relaxed">
           {isLoading
-            ? 'Loading...'
+            ? t('footer.loading')
             : error || !footer
-            ? 'Contact information could not be loaded.'
-            : 'Empowering the next generation of business leaders with world-class education.'}
+            ? t('footer.error')
+            : t('footer.description')}
         </p>
 
         <div className="flex items-center gap-4 mb-8">
@@ -76,9 +77,8 @@ export function Footer() {
           }
         </div>
 
-      
         <p className="text-sm text-slate-600 border-t border-blue-100 pt-6 w-full text-center">
-          © {new Date().getFullYear()} {footer?.name || 'Academy'}. All rights reserved.
+          © {new Date().getFullYear()} {footer?.name || 'Academy'}. {t('footer.copyright')}
         </p>
       </div>
     </footer>

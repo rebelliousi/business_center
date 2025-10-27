@@ -81,6 +81,55 @@ export const en = {
     step: "Step {{count}}",
     loading: "Loading advices...",
     error: "An error occurred while loading advices."
+  },
+  comments: {
+    title: "What Our Students Say",
+    subtitle: "Join thousands of satisfied professionals who have transformed their careers",
+    loading: "Loading comments...",
+    error: "An error occurred while loading comments.",
+    at: "at"
+  },
+  discounts: {
+    badge: "Limited Time Offers",
+    cardBadge: "Special Offer",
+    title: "Special <1>Discounts</1>",
+    subtitle: "Take advantage of our exclusive offers and start your learning journey today",
+    validUntil: "Valid until {{date}}",
+    claim: "Claim Offer",
+    off: "OFF",
+    noActive: "No active discounts at the moment. Check back soon!",
+    loading: "Loading discounts...",
+    error: "An error occurred while loading discounts."
+  },
+  about: {
+    loading: "Loading about information...",
+    error: "An error occurred while loading about information."
+  },
+  contact: {
+    title: "Get In <1>Touch</1>",
+    subtitle: "Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.",
+    sendMessage: "Send us a message",
+    name: "Name",
+    gmail: "Gmail",
+    comment: "Comment",
+    send: "Send Message",
+    sending: "Sending...",
+    sent: "Message sent! Please verify your email.",
+    error: "An error occurred. Please try again.",
+    verifyTitle: "Verify Your Email",
+    verifyPrompt: "Please enter the verification code sent to your gmail address.",
+    code: "Verification Code",
+    verify: "Verify Email",
+    verifying: "Verifying...",
+    verifySuccess: "Verification successful!",
+    verifyError: "Verification failed. Please try again.",
+    specialOffer: "Special Offer"
+  },
+  footer: {
+    loading: "Loading...",
+    error: "Contact information could not be loaded.",
+    description: "Empowering the next generation of business leaders with world-class education.",
+    copyright: "All rights reserved."
   }
 };
 ;

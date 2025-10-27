@@ -2,11 +2,13 @@ import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { Star } from 'lucide-react';
-import { useComments,type  CommentType } from '../hooks/useComments'; // <-- Hook'u import et
+import { useComments, type CommentType } from '../hooks/useComments';
+import { useTranslation } from "react-i18next";
 
 export function InfiniteScroll() {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const { data: testimonials = [], isLoading, error } = useComments(); // <-- API'den veriyi al
+  const { data: testimonials = [], isLoading, error } = useComments();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!scrollRef.current || !testimonials.length) return;
@@ -27,12 +29,13 @@ export function InfiniteScroll() {
         }
       }
     });
-  }, [testimonials]); // testimonials değişince tekrar çalışsın
+  }, [testimonials]);
 
   if (isLoading) {
     return (
       <div className="py-20 text-center">
         <span className="inline-block animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full" />
+        <div className="mt-4 text-blue-600 font-semibold">{t("comments.loading")}</div>
       </div>
     );
   }
@@ -40,7 +43,7 @@ export function InfiniteScroll() {
   if (error) {
     return (
       <div className="py-20 text-center text-red-500">
-        Yorumlar yüklenirken hata oluştu.
+        {t("comments.error")}
       </div>
     );
   }
@@ -48,7 +51,7 @@ export function InfiniteScroll() {
   const duplicatedTestimonials = [...testimonials, ...testimonials];
 
   return (
-    <section  id='comments' className="py-20 bg-white overflow-hidden">
+    <section id='comments' className="py-20 bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -58,10 +61,10 @@ export function InfiniteScroll() {
           className="text-center mb-12"
         >
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            What Our Students Say
+            {t("comments.title")}
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Join thousands of satisfied professionals who have transformed their careers
+            {t("comments.subtitle")}
           </p>
         </motion.div>
 
@@ -93,7 +96,7 @@ export function InfiniteScroll() {
                     <div>
                       <div className="font-semibold text-gray-900">{testimonial.name}</div>
                       <div className="text-sm text-gray-600">
-                        {testimonial.role} at {testimonial.company}
+                        {testimonial.role} {t("comments.at")} {testimonial.company}
                       </div>
                     </div>
                   </div>
