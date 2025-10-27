@@ -26,6 +26,7 @@ import {
   X,
 } from 'lucide-react';
 import { useCourses } from '../hooks/useCourses';
+import { useTranslation, Trans } from 'react-i18next';
 
 // Otomatik icon atama için ikon listesi
 const iconList = [
@@ -92,17 +93,19 @@ export default function Courses() {
   const { data: courses, isLoading, error } = useCourses();
   const [showAll, setShowAll] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<any | null>(null);
+  const { t } = useTranslation();
 
   if (isLoading) {
     return (
       <div className="text-center py-20">
         <span className="inline-block animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full" />
+        <div className="mt-4 text-blue-600 font-semibold">{t("courses.loading")}</div>
       </div>
     );
   }
 
   if (error) {
-    return <div className="text-center text-red-500 py-20">Kurslar yüklenirken hata oluştu.</div>;
+    return <div className="text-center text-red-500 py-20">{t("courses.error")}</div>;
   }
 
   // Gösterilecek kurslar (8 veya tamamı)
@@ -119,10 +122,12 @@ export default function Courses() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-            Featured <span className="text-blue-600">Courses</span>
+            <Trans i18nKey="courses.title">
+              Featured <span className="text-blue-600">Courses</span>
+            </Trans>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Explore our comprehensive selection of business courses designed to accelerate your professional growth.
+            {t("courses.subtitle")}
           </p>
         </motion.div>
 
@@ -156,14 +161,14 @@ export default function Courses() {
                   <div className="flex items-center gap-1">
                     <Clock className="w-4 h-4" />
                     <span>
-                      {typeof course.duration_weeks === "number"
-                        ? `${course.duration_weeks} weeks`
-                        : course.duration_weeks}
+                      {t("courses.duration", { count: course.duration_weeks })}
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
                     <Users className="w-4 h-4" />
-                    <span>{course.students}</span>
+                    <span>
+                      {t("courses.students", { count: course.students })}
+                    </span>
                   </div>
                 </div>
 
@@ -176,7 +181,7 @@ export default function Courses() {
                     className={`${colors.text} font-semibold hover:underline`}
                     onClick={() => setSelectedCourse(course)}
                   >
-                    Learn More →
+                    {t("courses.learnMore")}
                   </button>
                 </div>
               </motion.div>
@@ -193,7 +198,7 @@ export default function Courses() {
               className="inline-flex items-center gap-2 px-8 py-3 border-2 border-blue-600 text-blue-600 bg-transparent rounded-full font-semibold shadow hover:bg-blue-50 hover:text-blue-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
               onClick={() => setShowAll((v) => !v)}
             >
-              {showAll ? "Show less" : "See all"}
+              {showAll ? t("courses.showLess") : t("courses.showAll")}
               {showAll ? (
                 <ChevronUp className="w-5 h-5 ml-1" />
               ) : (
@@ -237,10 +242,10 @@ export default function Courses() {
                   <p className="text-gray-700 mb-6">{selectedCourse.description}</p>
                   <div className="flex items-center gap-4 mb-4">
                     <span className="flex items-center gap-1 text-gray-500">
-                      <Clock className="w-4 h-4" /> {selectedCourse.duration_weeks} weeks
+                      <Clock className="w-4 h-4" /> {t("courses.duration", { count: selectedCourse.duration_weeks })}
                     </span>
                     <span className="flex items-center gap-1 text-gray-500">
-                      <Users className="w-4 h-4" /> {selectedCourse.students} students
+                      <Users className="w-4 h-4" /> {t("courses.students", { count: selectedCourse.students })}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 mb-4">
@@ -248,7 +253,8 @@ export default function Courses() {
                     <span className="font-semibold text-gray-900">{selectedCourse.rating}</span>
                   </div>
                   <div className="text-xl font-semibold text-blue-700 mb-2">
-                    Price: {selectedCourse.price ? `${selectedCourse.price} TMT` : 'Free'}
+                    {t("courses.price")}:{" "}
+                    {selectedCourse.price ? `${selectedCourse.price} TMT` : t("courses.free")}
                   </div>
                 </div>
               </motion.div>

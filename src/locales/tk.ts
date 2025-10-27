@@ -47,5 +47,19 @@ export const tk = {
         description: "Okuwy tamamlanlaryň köpüsi gysga wagtda täze iş mümkinçiliklerine eýe bolýar."
       }
     ]
+  },
+  courses: {
+    title: "Saýlanan <1>Kurslar</1>",
+    subtitle: "Işewürlikde ösüşiňizi çaltlandyrmak üçin giňişleýin kurslarymyz bilen tanyşyň.",
+    showAll: "Hemmesini gör",
+    showLess: "Az görkez",
+    loading: "Kurslar ýüklenýär...",
+    error: "Kurslar ýüklenende näsazlyk ýüze çykdy.",
+    learnMore: "Giňişleýin →",
+    duration: "{{count}} hepde",
+    duration_plural: "{{count}} hepde",
+    students: "{{count}} talyp",
+    price: "Bahasy",
+    free: "Pulsuz"
   }
 };

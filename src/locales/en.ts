@@ -48,6 +48,20 @@ export const en = {
         description: "95% of our graduates report career advancement within 6 months of course completion."
       }
     ]
+  },
+  courses: {
+    title: "Featured <1>Courses</1>",
+    subtitle: "Explore our comprehensive selection of business courses designed to accelerate your professional growth.",
+    showAll: "See all",
+    showLess: "Show less",
+    loading: "Loading courses...",
+    error: "An error occurred while loading courses.",
+    learnMore: "Learn More →",
+    duration: "{{count}} week",
+    duration_plural: "{{count}} weeks",
+    students: "{{count}} students",
+    price: "Price",
+    free: "Free"
   }
 };
 ;
