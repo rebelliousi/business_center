@@ -1,46 +1,74 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Linkedin, Award, ChevronDown, ChevronUp } from 'lucide-react';
-import { useTeachers, type TeacherType } from '../hooks/useTeachers';
-import { useTranslation, Trans } from 'react-i18next';
+import { Mail, Phone, MapPin, Send, ShieldCheck } from 'lucide-react';
+import { useState } from 'react';
+import { useSendForm } from '../hooks/useSendForm';
+import { useVerifyEmail } from '../hooks/useVerifyEmail';
+import ContactInfo from './ContactInfo';
+import { useTranslation, Trans } from "react-i18next";
 
-const avatarColors = {
-  blue:    "#3b82f6",
-  green:   "#10b981",
-  orange:  "#f59e0b",
-  purple:  "#8b5cf6",
-  red:     "#ef4444",
-  yellow:  "#eab308",
-  teal:    "#14b8a6",
-  indigo:  "#6366f1",
-  pink:    "#ec4899",
-  cyan:    "#06b6d4",
-} as const;
+export default function Contact() {
+  const [formData, setFormData] = useState({
+    username: '',
+    gmail: '',
+    comment: '',
+  });
 
-type AvatarColor = keyof typeof avatarColors;
+  // Modal için state
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
+  const [verifyData, setVerifyData] = useState({ gmail: '', verification_code: '' });
 
-export default function Teachers() {
-  const { data: teachers, isLoading, error } = useTeachers();
-  const [showAll, setShowAll] = useState(false);
   const { t } = useTranslation();
 
-  if (isLoading) {
-    return (
-      <div className="text-center py-20">
-        <span className="inline-block animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full" />
-        <div className="mt-4 text-blue-600 font-semibold">{t("teachers.loading")}</div>
-      </div>
-    );
-  }
+  const { mutate, isPending, isSuccess, isError, error, reset } = useSendForm();
+  const {
+    mutate: verifyMutate,
+    isPending: isVerifying,
+    isSuccess: isVerifySuccess,
+    isError: isVerifyError,
+    error: verifyError,
+    reset: verifyReset,
+  } = useVerifyEmail();
 
-  if (error) {
-    return <div className="text-center text-red-500 py-20">{t("teachers.error")}</div>;
-  }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    mutate(formData, {
+      onSuccess: () => {
+        setFormData({ username: '', gmail: '', comment: '' });
+        setVerifyData({ gmail: formData.gmail, verification_code: '' });
+        setShowVerifyModal(true);
+      },
+    });
+  };
 
-  const displayedTeachers = showAll ? teachers : teachers?.slice(0, 4);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+    if (isSuccess || isError) reset();
+  };
+
+  const handleVerifyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setVerifyData({
+      ...verifyData,
+      [e.target.name]: e.target.value,
+    });
+    if (isVerifySuccess || isVerifyError) verifyReset();
+  };
+
+  const handleVerify = (e: React.FormEvent) => {
+    e.preventDefault();
+    verifyMutate(verifyData);
+  };
+
+  const closeModal = () => {
+    setShowVerifyModal(false);
+    verifyReset();
+    setVerifyData({ gmail: '', verification_code: '' });
+  };
 
   return (
-    <section id="teachers" className="py-20 bg-white">
+    <section id="contact" className="py-20 bg-gradient-to-b from-white to-blue-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -50,90 +78,214 @@ export default function Teachers() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-            <Trans i18nKey="teachers.title">
-              Meet Our <span className="text-blue-600">Expert Instructors</span>
+            <Trans i18nKey="contact.title">
+              Get In <span className="text-blue-600">Touch</span>
             </Trans>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            {t("teachers.subtitle")}
+            {t("contact.subtitle")}
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-8">
-          {displayedTeachers?.map((teacher: TeacherType, index: number) => {
-            const color = (teacher.color in avatarColors ? teacher.color : 'blue') as AvatarColor;
-            return (
-              <motion.div
-                key={teacher.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ scale: 1.02 }}
-                className="bg-gradient-to-br from-blue-50 to-white rounded-2xl p-8 shadow-lg border border-blue-100"
-              >
-                <div className="flex items-start gap-6">
-                  <motion.div whileHover={{ rotate: 5 }} className="shrink-0">
-                    <svg width="120" height="120" viewBox="0 0 120 120">
-                      <defs>
-                        <linearGradient id={`grad-${teacher.id}`} x1="0%" y1="0%" x2="100%" y2="100%">
-                          <stop offset="0%" style={{ stopColor: avatarColors[color], stopOpacity: 0.8 }} />
-                          <stop offset="100%" style={{ stopColor: avatarColors[color], stopOpacity: 1 }} />
-                        </linearGradient>
-                      </defs>
-                      <circle cx="60" cy="60" r="58" fill={`url(#grad-${teacher.id})`} />
-                      <circle cx="60" cy="45" r="20" fill="white" opacity="0.9" />
-                      <ellipse cx="60" cy="95" rx="30" ry="35" fill="white" opacity="0.9" />
-                      <rect x="35" y="30" width="10" height="8" rx="2" fill={avatarColors[color]} opacity="0.8" />
-                      <rect x="75" y="30" width="10" height="8" rx="2" fill={avatarColors[color]} opacity="0.8" />
-                      <path d="M 50 55 Q 60 60 70 55" stroke={avatarColors[color]} strokeWidth="2" fill="none" strokeLinecap="round" />
-                    </svg>
-                  </motion.div>
-
-                  <div className="flex-1">
-                    <h3 className="text-2xl font-bold text-gray-900 mb-1">
-                      {teacher.name} {teacher.surname}
-                    </h3>
-                    <p className="text-blue-600 font-semibold mb-2">{teacher.role}</p>
-                    <div className="flex items-center gap-2 text-sm text-gray-600 mb-3">
-                      <Award className="w-4 h-4" />
-                    <span>{t("teachers.experience", { count: Number(teacher.experience) })}</span>
-                    </div>
-                    <div className="bg-white rounded-lg p-3 mb-3">
-                      <p className="text-sm font-semibold text-gray-700 mb-1">{t("teachers.expertise")}:</p>
-                      <p className="text-sm text-gray-600">{teacher.expertise}</p>
-                    </div>
-                    <p className="text-gray-600 mb-4 leading-relaxed">{teacher.description}</p>
-                    <button className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold transition-colors">
-                      <Linkedin className="w-5 h-5" />
-                      <span>{t("teachers.viewProfile")}</span>
-                    </button>
-                  </div>
+        <div className="grid lg:grid-cols-2 gap-12">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="bg-white rounded-2xl p-8 shadow-lg">
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">{t("contact.sendMessage")}</h3>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <label htmlFor="username" className="block text-sm font-semibold text-gray-700 mb-2">
+                    {t("contact.name")}
+                  </label>
+                  <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    value={formData.username}
+                    onChange={handleChange}
+                    placeholder={t("contact.name")}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-none transition-all"
+                    required
+                  />
                 </div>
-              </motion.div>
-            );
-          })}
-        </div>
+                <div>
+                  <label htmlFor="gmail" className="block text-sm font-semibold text-gray-700 mb-2">
+                    {t("contact.gmail")}
+                  </label>
+                  <input
+                    type="email"
+                    id="gmail"
+                    name="gmail"
+                    value={formData.gmail}
+                    onChange={handleChange}
+                    placeholder={t("contact.gmail")}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-none transition-all"
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor="comment" className="block text-sm font-semibold text-gray-700 mb-2">
+                    {t("contact.comment")}
+                  </label>
+                  <textarea
+                    id="comment"
+                    name="comment"
+                    value={formData.comment}
+                    onChange={handleChange}
+                    rows={5}
+                    placeholder={t("contact.comment")}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-none transition-all resize-none"
+                    required
+                  />
+                </div>
 
-        {/* See All / Show Less Button */}
-        {teachers && teachers.length > 4 && (
-          <div className="text-center mt-12">
-            <motion.button
-              whileHover={{ scale: 1.06, y: -2 }}
-              whileTap={{ scale: 0.97 }}
-              className="inline-flex items-center gap-2 px-8 py-3 border-1 border-blue-600 text-blue-600 bg-transparent rounded-full font-semibold shadow hover:bg-blue-50 hover:text-blue-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              onClick={() => setShowAll((v) => !v)}
+                {isSuccess && (
+                  <div className="text-blue-600 font-semibold">
+                    {t("contact.sent")}
+                  </div>
+                )}
+                {isError && (
+                  <div className="text-red-600 font-semibold">
+                    {typeof error === 'object' && error !== null && 'message' in error
+                      ? (error as any).message
+                      : t("contact.error")}
+                  </div>
+                )}
+
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  type="submit"
+                  className="w-full bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors shadow-lg disabled:opacity-60"
+                  disabled={isPending}
+                >
+                  {isPending ? (
+                    <span className="animate-spin h-5 w-5 border-b-2 border-white rounded-full" />
+                  ) : (
+                    <>
+                      {t("contact.send")}
+                      <Send className="w-5 h-5" />
+                    </>
+                  )}
+                </motion.button>
+              </form>
+            </div>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="space-y-8"
+          >
+            <div>
+              <div className="space-y-6">
+                <motion.div>
+                  <ContactInfo />
+                </motion.div>
+              </div>
+            </div>
+
+            {/* Illustration (remains the same) */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
             >
-              {showAll ? t("teachers.showLess") : t("teachers.showAll")}
-              {showAll ? (
-                <ChevronUp className="w-5 h-5 ml-1" />
-              ) : (
-                <ChevronDown className="w-5 h-5 ml-1" />
-              )}
-            </motion.button>
-          </div>
-        )}
+              {/* ... SVG ... */}
+            </motion.div>
+          </motion.div>
+        </div>
       </div>
+
+      {/* Modal */}
+      {showVerifyModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full relative"
+          >
+            <button
+              onClick={closeModal}
+              className="absolute top-2 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold"
+              aria-label="Close"
+            >×</button>
+            <div className="flex flex-col items-center gap-2 mb-6">
+              <ShieldCheck className="w-10 h-10 text-blue-600" />
+              <h3 className="text-2xl font-bold">{t("contact.verifyTitle")}</h3>
+              <p className="text-gray-600 text-center text-sm">
+                {t("contact.verifyPrompt")}
+              </p>
+            </div>
+            <form onSubmit={handleVerify} className="space-y-5">
+              <div>
+                <label htmlFor="gmail" className="block text-sm font-semibold text-gray-700 mb-2">
+                  {t("contact.gmail")}
+                </label>
+                <input
+                  type="email"
+                  id="gmail"
+                  name="gmail"
+                  value={verifyData.gmail}
+                  onChange={handleVerifyChange}
+                  placeholder={t("contact.gmail")}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-none transition-all"
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="verification_code" className="block text-sm font-semibold text-gray-700 mb-2">
+                  {t("contact.code")}
+                </label>
+                <input
+                  type="text"
+                  id="verification_code"
+                  name="verification_code"
+                  value={verifyData.verification_code}
+                  onChange={handleVerifyChange}
+                  placeholder={t("contact.code")}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-none transition-all"
+                  required
+                />
+              </div>
+              {isVerifySuccess && (
+                <div className="text-green-600 font-semibold">
+                  {t("contact.verifySuccess")}
+                </div>
+              )}
+              {isVerifyError && (
+                <div className="text-red-600 font-semibold">
+                  {typeof verifyError === 'object' && verifyError !== null && 'message' in verifyError
+                    ? (verifyError as any).message
+                    : t("contact.verifyError")}
+                </div>
+              )}
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                type="submit"
+                className="w-full bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors shadow-lg disabled:opacity-60"
+                disabled={isVerifying}
+              >
+                {isVerifying ? (
+                  <span className="animate-spin h-5 w-5 border-b-2 border-white rounded-full" />
+                ) : (
+                  <>
+                    {t("contact.verify")}
+                    <ShieldCheck className="w-5 h-5" />
+                  </>
+                )}
+              </motion.button>
+            </form>
+          </motion.div>
+        </div>
+      )}
     </section>
   );
 }

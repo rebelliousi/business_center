@@ -107,7 +107,7 @@ export const tk = {
   contact: {
     title: "Biziň bilen <1>habarlaşyň</1>",
     subtitle: "Soraglaryňyz barmy? Biz size kömek etmäge taýýar. Bize habar ýollaň, mümkin boldugyça çalt jogap bereris.",
-    sendMessage: "Bize hat ýollaň",
+    sendMessage: "Biziň bilen habarlaşyň",
     name: "Ady",
     gmail: "Gmail",
     comment: "Teswir",

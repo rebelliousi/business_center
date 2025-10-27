@@ -29,16 +29,19 @@ export function Footer() {
 
   return (
     <footer className="relative bg-gradient-to-b from-blue-50 to-white border-t border-blue-100">
-      <div className="container mx-auto px-4 py-16 flex flex-col items-center justify-center">
-        <a href="#home" className="flex items-center gap-2 mb-4">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center shadow-lg shadow-blue-500/30">
-            <BookOpen className="w-6 h-6 text-white" />
+      <div className="container mx-auto px-4 sm:px-6 py-10 sm:py-12 md:py-16 flex flex-col items-center justify-center">
+        {/* Logo & Brand */}
+        <a href="#home" className="flex items-center gap-2 sm:gap-2.5 mb-3 sm:mb-4 group">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center shadow-lg shadow-blue-500/30 group-hover:scale-105 transition-transform">
+            <BookOpen className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
           </div>
-          <span className="text-2xl tracking-tight text-blue-900 font-semibold">
+          <span className="text-lg sm:text-xl md:text-2xl tracking-tight text-blue-900 font-semibold text-center leading-tight">
             {footer?.name || 'Ýokary tehnologiýalaryň işewürligi'}
           </span>
         </a>
-        <p className="text-slate-600 mb-8 max-w-xl text-center leading-relaxed">
+
+        {/* Description */}
+        <p className="text-slate-600 mb-6 sm:mb-8 max-w-xl text-center leading-relaxed text-sm sm:text-base px-4">
           {isLoading
             ? t('footer.loading')
             : error || !footer
@@ -46,7 +49,8 @@ export function Footer() {
             : t('footer.description')}
         </p>
 
-        <div className="flex items-center gap-4 mb-8">
+        {/* Social Links */}
+        <div className="flex items-center gap-2.5 sm:gap-3 md:gap-4 mb-6 sm:mb-8">
           {dynamicSocialLinks.length > 0
             ? dynamicSocialLinks.map((social) => {
                 const Icon = social.icon;
@@ -57,27 +61,43 @@ export function Footer() {
                     aria-label={social.label}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 bg-white rounded-xl border border-blue-200 hover:border-blue-300 hover:bg-blue-50 flex items-center justify-center transition-all group"
+                    className="w-9 h-9 sm:w-10 sm:h-10 bg-white rounded-lg sm:rounded-xl border border-blue-200 hover:border-blue-300 hover:bg-blue-50 flex items-center justify-center transition-all group active:scale-95"
                   >
-                    <Icon className="w-5 h-5 text-blue-600 group-hover:text-blue-700 transition-colors" />
+                    <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 group-hover:text-blue-700 transition-colors" />
                   </a>
                 );
               })
             : [
-                <a key="Twitter" href="#" aria-label="Twitter" className="w-10 h-10 bg-white rounded-xl border border-blue-200 hover:border-blue-300 hover:bg-blue-50 flex items-center justify-center transition-all group">
-                  <Twitter className="w-5 h-5 text-blue-600 group-hover:text-blue-700 transition-colors" />
+                <a 
+                  key="Twitter" 
+                  href="#" 
+                  aria-label="Twitter" 
+                  className="w-9 h-9 sm:w-10 sm:h-10 bg-white rounded-lg sm:rounded-xl border border-blue-200 hover:border-blue-300 hover:bg-blue-50 flex items-center justify-center transition-all group active:scale-95"
+                >
+                  <Twitter className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 group-hover:text-blue-700 transition-colors" />
                 </a>,
-                <a key="LinkedIn" href="#" aria-label="LinkedIn" className="w-10 h-10 bg-white rounded-xl border border-blue-200 hover:border-blue-300 hover:bg-blue-50 flex items-center justify-center transition-all group">
-                  <Linkedin className="w-5 h-5 text-blue-600 group-hover:text-blue-700 transition-colors" />
+                <a 
+                  key="LinkedIn" 
+                  href="#" 
+                  aria-label="LinkedIn" 
+                  className="w-9 h-9 sm:w-10 sm:h-10 bg-white rounded-lg sm:rounded-xl border border-blue-200 hover:border-blue-300 hover:bg-blue-50 flex items-center justify-center transition-all group active:scale-95"
+                >
+                  <Linkedin className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 group-hover:text-blue-700 transition-colors" />
                 </a>,
-                <a key="GitHub" href="#" aria-label="GitHub" className="w-10 h-10 bg-white rounded-xl border border-blue-200 hover:border-blue-300 hover:bg-blue-50 flex items-center justify-center transition-all group">
-                  <Github className="w-5 h-5 text-blue-600 group-hover:text-blue-700 transition-colors" />
+                <a 
+                  key="GitHub" 
+                  href="#" 
+                  aria-label="GitHub" 
+                  className="w-9 h-9 sm:w-10 sm:h-10 bg-white rounded-lg sm:rounded-xl border border-blue-200 hover:border-blue-300 hover:bg-blue-50 flex items-center justify-center transition-all group active:scale-95"
+                >
+                  <Github className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 group-hover:text-blue-700 transition-colors" />
                 </a>
               ]
           }
         </div>
 
-        <p className="text-sm text-slate-600 border-t border-blue-100 pt-6 w-full text-center">
+        {/* Copyright */}
+        <p className="text-xs sm:text-sm text-slate-600 border-t border-blue-100 pt-4 sm:pt-6 w-full text-center px-4">
           © {new Date().getFullYear()} {footer?.name || 'Academy'}. {t('footer.copyright')}
         </p>
       </div>
