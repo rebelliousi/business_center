@@ -75,6 +75,7 @@ export const en = {
     your_rating: "Your rating",
     rating_date: "Rated on: {{date}}",
     hours: "{{count}} hours",
+   
   },
   teachers: {
     title: "Meet Our <1>Expert Instructors</1>",

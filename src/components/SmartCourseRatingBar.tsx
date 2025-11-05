@@ -118,7 +118,7 @@ export const SmartCourseRatingBar: React.FC<SmartCourseRatingBarProps> = ({
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 5, scale: 0.95 }}
       transition={{ duration: 0.2 }}
-      className={`absolute bottom-full mb-2 z-50 w-max max-w-[160px] right-0`}
+      className={`absolute bottom-full mb-2 z-50 w-max max-w-[160px] right-0 ${isMobileDevice ? 'translate-x-8 left-2' : ''}`}
       onMouseEnter={() => !isMobileDevice && openTooltip()}
       onMouseLeave={() => !isMobileDevice && closeTooltip()}
     >

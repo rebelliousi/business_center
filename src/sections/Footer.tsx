@@ -50,7 +50,7 @@ export function Footer() {
             ? t('footer.error')
             : t('footer.description')}
         </p>
-         <span className="text-gray-500 italic text-base">
+         <span className="text-gray-500 italic text-center text-base">
             {t("footer.university_name")}
             </span>
 

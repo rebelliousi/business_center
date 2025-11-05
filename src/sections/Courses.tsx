@@ -29,7 +29,7 @@ import {
 import { useCourses } from '../hooks/useCourses';
 import { useTranslation, Trans } from 'react-i18next';
 import SmartCourseRatingBar from '../components/SmartCourseRatingBar';
-import { colorClasses } from '../components/colorClasses'; // <-- Dışarıdan import ettik!
+import { colorClasses } from '../components/colorClasses';
 
 const iconList = [
   Star,
@@ -52,7 +52,6 @@ const iconList = [
   ClipboardList,
 ];
 
-// Renk kontrol fonksiyonunu güncelliyoruz!
 const allowedColors = Object.keys(colorClasses) as Array<keyof typeof colorClasses>;
 function getCourseColor(value: string): keyof typeof colorClasses {
   return allowedColors.includes(value as any) ? (value as keyof typeof colorClasses) : "blue";
@@ -87,6 +86,7 @@ export default function Courses() {
     return <div className="text-center text-red-500 py-12 sm:py-16 md:py-20 text-sm sm:text-base">{t("courses.error")}</div>;
   }
 
+  // Burada gösterilecek kursları belirliyoruz: max 8 veya tümü
   const displayedCourses = showAll ? courses : courses?.slice(0, 8);
 
   return (
@@ -109,7 +109,8 @@ export default function Courses() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
+        {/* Responsive grid: mobile tek kolon, tablet 2, desktop 3 */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
           {displayedCourses?.map((course, index) => {
             const cardColorKey = getCourseColor(course.color);
             const colors = colorClasses[cardColorKey];
@@ -123,40 +124,35 @@ export default function Courses() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 whileHover={{ y: -8 }}
-                className={`bg-white rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-5 md:p-6 lg:p-8 shadow-md sm:shadow-lg border-2 border-transparent ${colors.hover} transition-all cursor-pointer relative overflow-hidden group`}
+                className={`bg-white rounded-md sm:rounded-xl md:rounded-2xl p-2 sm:p-5 md:p-6 lg:p-8 shadow-md sm:shadow-lg border-2 border-transparent ${colors.hover} transition-all cursor-pointer relative overflow-hidden group`}
               >
                 <div
-                  className={`absolute top-0 right-0 w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-br ${colors.gradient} opacity-10 rounded-full -mr-12 -mt-12 sm:-mr-16 sm:-mt-16 group-hover:scale-150 transition-transform duration-500`}
+                  className={`absolute top-0 right-0 w-16 h-16 sm:w-32 sm:h-32 bg-gradient-to-br ${colors.gradient} opacity-10 rounded-full -mr-8 -mt-8 sm:-mr-16 sm:-mt-16 group-hover:scale-150 transition-transform duration-500`}
                 />
-
-                <div className={`${colors.bg} w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-lg sm:rounded-xl flex items-center justify-center mb-4 sm:mb-5 md:mb-6 relative z-10`}>
-                  <Icon className={`w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 ${colors.text}`} />
+                <div className={`${colors.bg} w-9 h-9 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-md sm:rounded-xl flex items-center justify-center mb-3 sm:mb-5 md:mb-6 relative z-10`}>
+                  <Icon className={`w-5 h-5 sm:w-7 sm:h-7 md:w-8 md:h-8 ${colors.text}`} />
                 </div>
-
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-2 sm:mb-3 relative z-10 line-clamp-2">
+                <h3 className="text-base sm:text-xl md:text-2xl font-bold text-gray-900 mb-2 sm:mb-3 relative z-10 line-clamp-2">
                   {getTranslated(course, "title", lang)}
                 </h3>
-                <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-5 md:mb-6 leading-relaxed relative z-10 line-clamp-2 sm:line-clamp-3">
+                <p className="text-xs sm:text-base text-gray-600 mb-3 sm:mb-5 md:mb-6 leading-relaxed relative z-10 line-clamp-2 sm:line-clamp-3">
                   {getTranslated(course, "description", lang)}
                 </p>
-
-                <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4 relative z-10">
+                <div className="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500 mb-2 sm:mb-4 relative z-10">
                   <div className="flex items-center gap-1">
-                    <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+                    <Calendar className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
                     <span className="truncate">
                       {t("courses.duration", { count: course.duration_weeks })}
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+                    <Clock className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
                     <span className="truncate">
                       {t("courses.hours", { count: course.hours })}
                     </span>
                   </div>
                 </div>
-
-                <div className="flex items-center justify-between pt-3 sm:pt-4 border-t border-gray-100 relative z-10">
-                  {/* Rating bar - renk uyumlu! */}
+                <div className="flex items-center justify-between pt-2 sm:pt-4 border-t border-gray-100 relative z-10">
                   <SmartCourseRatingBar courseId={course.id} compact color={cardColorKey} />
                   <button
                     className={`${colors.text} text-xs sm:text-sm font-semibold hover:underline`}
@@ -170,7 +166,7 @@ export default function Courses() {
           })}
         </div>
 
-        {/* See All / Show Less Button */}
+        {/* Sadece 8'den fazla kurs varsa buton göster */}
         {courses && courses.length > 8 && (
           <div className="text-center mt-8 sm:mt-10 md:mt-12">
             <motion.button
@@ -189,14 +185,14 @@ export default function Courses() {
           </div>
         )}
 
-        {/* Modal */}
+        {/* Modal responsive */}
         <AnimatePresence>
           {selectedCourse && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4"
+              className="fixed inset-0 z-50 flex items-center justify-center p-1 sm:p-4"
             >
               {/* Modal Background */}
               <div
@@ -209,7 +205,7 @@ export default function Courses() {
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.96, opacity: 0 }}
                 transition={{ type: "spring", stiffness: 300, damping: 24 }}
-                className="relative z-10 bg-white rounded-xl sm:rounded-2xl shadow-2xl p-5 sm:p-6 md:p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto"
+                className="relative z-10 bg-white rounded-md sm:rounded-2xl shadow-2xl p-3 sm:p-6 md:p-8 max-w-xs sm:max-w-lg w-full max-h-[90vh] overflow-y-auto"
               >
                 <button
                   className="absolute top-2 right-2 sm:top-3 sm:right-3 text-gray-400 hover:text-gray-700 p-1 rounded-full hover:bg-gray-100 transition-colors"
@@ -218,14 +214,14 @@ export default function Courses() {
                 >
                   <X className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
-                <div className="mb-4 sm:mb-6 pr-8">
-                  <h3 className="text-xl sm:text-2xl font-bold text-blue-900 mb-2 sm:mb-3">
+                <div className="mb-3 sm:mb-6 pr-5 sm:pr-8">
+                  <h3 className="text-base sm:text-2xl font-bold text-blue-900 mb-2 sm:mb-3">
                     {getTranslated(selectedCourse, "title", lang)}
                   </h3>
-                  <p className="text-sm sm:text-base text-gray-700 mb-4 sm:mb-6 leading-relaxed">
+                  <p className="text-xs sm:text-base text-gray-700 mb-3 sm:mb-6 leading-relaxed">
                     {getTranslated(selectedCourse, "description", lang)}
                   </p>
-                  <div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-3 sm:mb-4 text-xs sm:text-sm">
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-4 mb-3 sm:mb-4 text-xs sm:text-sm">
                     <span className="flex items-center gap-1 text-gray-500">
                       <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> {t("courses.duration", { count: selectedCourse.duration_weeks })}
                     </span>
@@ -234,10 +230,9 @@ export default function Courses() {
                     </span>
                   </div>
                   <div className="flex items-center gap-2 mb-3 sm:mb-4">
-                   {/* Modal rating bar - renk uyumlu! */}
                    <SmartCourseRatingBar courseId={selectedCourse.id} color={getCourseColor(selectedCourse.color)} />
                   </div>
-                  <div className="text-lg sm:text-xl font-semibold text-blue-700 mb-2">
+                  <div className="text-base sm:text-xl font-semibold text-blue-700 mb-2">
                     {t("courses.price")}:{" "}
                     {selectedCourse.price ? `${selectedCourse.price} TMT` : t("courses.free")}
                   </div>
