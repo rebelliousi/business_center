@@ -36,7 +36,7 @@ export function Header() {
     { key: 'courses', href: '#courses' },
     { key: 'teachers', href: '#teachers' },
     { key: 'insights', href: '#advice' },
-    { key: 'comments', href: '#comments' },
+    // { key: 'comments', href: '#comments' },
     { key: 'discounts', href: '#discounts' },
     { key: 'about', href: '#about' },
     { key: 'contact', href: '#contact' },
