@@ -29,7 +29,7 @@ export const App = () => {
         <Courses />
         <Teachers />
         <BusinessAdvice />
-        <InfiniteScroll />
+        {/* <InfiniteScroll /> */}
         <Discounts />
         <About />
         <Contact />

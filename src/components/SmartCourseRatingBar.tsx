@@ -2,67 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Info } from 'lucide-react';
 import { useRateCourse } from '../hooks/useRateCourse';
-import { useCourseRatings } from '../hooks/useCourseRatingInfo'
+import { useCourseRatings } from '../hooks/useCourseRatingInfo';
 import { useTranslation } from 'react-i18next';
-import { colorClasses } from '../components/colorClasses'
+import { colorClasses } from '../components/colorClasses';
 
 type UserRatingInfo = {
   rating: number;
   created_at: string;
 };
 
-type ColorProps = {
-  text: string;
-  bg: string;
-  hover: string;
-  gradient: string;
-};
-
-
 export interface SmartCourseRatingBarProps {
   courseId: number | string;
   compact?: boolean;
   color?: keyof typeof colorClasses; 
 }
-
-// const colorClasses = {
-//   blue: {
-//     bg: 'bg-blue-100',
-//     text: 'text-blue-600',
-//     hover: 'hover:border-blue-600',
-//     gradient: 'from-blue-500 to-cyan-500',
-//   },
-//   green: {
-//     bg: 'bg-green-100',
-//     text: 'text-green-600',
-//     hover: 'hover:border-green-600',
-//     gradient: 'from-green-500 to-emerald-500',
-//   },
-//   orange: {
-//     bg: 'bg-orange-100',
-//     text: 'text-orange-600',
-//     hover: 'hover:border-orange-600',
-//     gradient: 'from-amber-500 to-orange-500',
-//   },
-//   purple: {
-//     bg: 'bg-purple-100',
-//     text: 'text-purple-600',
-//     hover: 'hover:border-purple-600',
-//     gradient: 'from-purple-500 to-pink-500',
-//   },
-//   yellow: {
-//     bg: 'bg-yellow-100',
-//     text: 'text-yellow-600',
-//     hover: 'hover:border-yellow-600',
-//     gradient: 'from-yellow-400 to-orange-400',
-//   },
-//   red: {
-//     bg: 'bg-red-100',
-//     text: 'text-red-600',
-//     hover: 'hover:border-red-600',
-//     gradient: 'from-rose-500 to-red-500',
-//   },
-// };
 
 export const SmartCourseRatingBar: React.FC<SmartCourseRatingBarProps> = ({
   courseId,
@@ -324,7 +277,7 @@ export const SmartCourseRatingBar: React.FC<SmartCourseRatingBarProps> = ({
           animate={{ opacity: 1 }}
           className="text-red-400 text-xs font-medium"
         >
-          {t("courses.error")}
+          {t("courses.errorr")}
         </motion.span>
       )}
     </div>

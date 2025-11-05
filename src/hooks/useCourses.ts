@@ -8,7 +8,7 @@ export interface CourseType {
   description: string;
   icon: string;
   duration_weeks: number;
-  students: number;
+  hours: number;
   rating: number | string; // API'dan string geliyorsa string de olabilir
   color: string;
   image: string;

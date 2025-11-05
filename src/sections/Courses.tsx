@@ -24,6 +24,7 @@ import {
   ChevronDown,
   ChevronUp,
   X,
+  Calendar,
 } from 'lucide-react';
 import { useCourses } from '../hooks/useCourses';
 import { useTranslation, Trans } from 'react-i18next';
@@ -141,15 +142,15 @@ export default function Courses() {
 
                 <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4 relative z-10">
                   <div className="flex items-center gap-1">
-                    <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+                    <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
                     <span className="truncate">
                       {t("courses.duration", { count: course.duration_weeks })}
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+                    <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
                     <span className="truncate">
-                      {t("courses.students", { count: course.students })}
+                      {t("courses.hours", { count: course.hours })}
                     </span>
                   </div>
                 </div>

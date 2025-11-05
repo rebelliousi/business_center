@@ -1,5 +1,6 @@
-import { motion } from 'framer-motion';
-import { Tag, Calendar, ArrowRight, Sparkles } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Tag, Calendar, ArrowRight, Sparkles, X } from 'lucide-react';
 import { useDiscounts } from '../hooks/useDiscounts';
 import { useTranslation, Trans } from "react-i18next";
 
@@ -13,13 +14,23 @@ function getTranslated(discount: any, field: string, lang: string) {
   );
 }
 
-function DiscountCard({ discount, index }: { discount: any; index: number }) {
+// Tarihi güvenli şekilde formatlayan fonksiyon
+function formatSafeDate(dateString: string, locale: string) {
+  if (!dateString) return "";
+  // DD.MM.YYYY tipi geldiyse çevir
+  const parts = dateString.split(".");
+  let isoDate = dateString;
+  if (parts.length === 3) {
+    isoDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+  }
+  const dateObj = new Date(isoDate);
+  return isNaN(dateObj.getTime()) ? "" : dateObj.toLocaleDateString(locale);
+}
+
+function DiscountCard({ discount, index, onLearnMore }: { discount: any; index: number; onLearnMore: (discount: any) => void }) {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
-  // Lokalizasyonlu tarih formatlama
-  const formattedDate = discount.valid_until
-    ? new Date(discount.valid_until).toLocaleDateString(i18n.language)
-    : "";
+  const formattedDate = formatSafeDate(discount.valid_until, i18n.language);
 
   return (
     <motion.div
@@ -32,7 +43,7 @@ function DiscountCard({ discount, index }: { discount: any; index: number }) {
     >
       <div className="absolute inset-0 bg-grid-white opacity-10"></div>
 
-      {/* Mobile Layout - Vertical Stack */}
+      {/* Mobile Layout */}
       <div className="md:hidden relative p-5">
         {/* Badge + Percentage Circle Combined at Top */}
         <div className="flex items-center justify-between mb-4">
@@ -89,16 +100,17 @@ function DiscountCard({ discount, index }: { discount: any; index: number }) {
           
           <motion.button
             className="flex items-center gap-1.5 bg-white text-blue-600 px-4 py-2 rounded-full hover:bg-blue-50 transition-colors font-semibold text-sm flex-shrink-0"
+            onClick={() => onLearnMore(discount)}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            {t('discounts.claim')}
+            {t('discounts.learnMore')}
             <ArrowRight className="w-4 h-4" />
           </motion.button>
         </div>
       </div>
 
-      {/* Desktop Layout - Original Grid */}
+      {/* Desktop Layout */}
       <div className="hidden md:grid relative grid-cols-2 gap-8 p-8">
         <div className="flex flex-col justify-between">
           <div>
@@ -129,10 +141,11 @@ function DiscountCard({ discount, index }: { discount: any; index: number }) {
 
           <motion.button
             className="flex items-center justify-center gap-2 bg-white text-blue-600 px-6 py-3 rounded-full hover:bg-blue-50 transition-colors font-semibold"
+            onClick={() => onLearnMore(discount)}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            {t('discounts.claim')}
+            {t('discounts.learnMore')}
             <ArrowRight className="w-5 h-5" />
           </motion.button>
         </div>
@@ -182,10 +195,78 @@ function DiscountCard({ discount, index }: { discount: any; index: number }) {
   );
 }
 
+function DiscountModal({ discount, onClose }: { discount: any, onClose: () => void }) {
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language;
+  const formattedDate = formatSafeDate(discount.valid_until, i18n.language);
+
+  // Örnek rule ve ekstra info: (gerekirse veriden doldur)
+  const rules = [
+    t("discounts.ruleOne"),
+    t("discounts.ruleTwo"),
+    t("discounts.ruleThree"),
+    // İstediğin kadar ekleyebilirsin veya discount objesinden alabilirsin.
+  ];
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
+        <div
+          className="absolute inset-0 bg-gradient-to-br from-blue-300/40 via-blue-900/50 to-blue-500/70 backdrop-blur-[2px]"
+          onClick={onClose}
+        />
+        <motion.div
+          initial={{ scale: 0.96, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.96, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 300, damping: 24 }}
+          className="relative z-10 bg-white rounded-xl sm:rounded-2xl shadow-2xl p-5 sm:p-6 md:p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto"
+        >
+          <button
+            className="absolute top-2 right-2 sm:top-3 sm:right-3 text-gray-400 hover:text-gray-700 p-1 rounded-full hover:bg-gray-100 transition-colors"
+            onClick={onClose}
+            aria-label="Close"
+          >
+            <X className="w-5 h-5 sm:w-6 sm:h-6" />
+          </button>
+          <div className="mb-3 sm:mb-5 pr-8">
+            <h3 className="text-xl sm:text-2xl font-bold text-blue-900 mb-2 sm:mb-3">
+              {getTranslated(discount, "title", lang)}
+            </h3>
+            <p className="text-sm sm:text-base text-gray-700 mb-4 sm:mb-6 leading-relaxed">
+              {getTranslated(discount, "description", lang)}
+            </p>
+            <div className="text-blue-700 font-semibold text-lg mb-2">
+              {discount.discount_percentage}% {t("discounts.off")}
+            </div>
+            <div className="flex items-center gap-2 text-gray-500 mb-2">
+              <Calendar className="w-4 h-4" /> {t('discounts.validUntil', { date: formattedDate })}
+            </div>
+            <div className="mb-4">
+              <div className="font-bold mb-2">{t("discounts.rulesTitle")}</div>
+              <ul className="pl-4 list-disc space-y-1 text-sm text-gray-600">
+                {rules.map((rule, idx) => (
+                  <li key={idx}>{rule}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
 export default function Discounts() {
   const { data: discounts = [], isLoading: loading, error } = useDiscounts();
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
+  const [selectedDiscount, setSelectedDiscount] = useState<any | null>(null);
 
   // Kartlar 5 taneyse özel dizilim uygulanır
   const isFive = discounts.length === 5;
@@ -231,24 +312,43 @@ export default function Discounts() {
               <div className="flex flex-col gap-4 sm:gap-6 md:gap-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
                   {discounts.slice(0, 2).map((discount: any, index: number) => (
-                    <DiscountCard key={discount.id} discount={discount} index={index} />
+                    <DiscountCard
+                      key={discount.id}
+                      discount={discount}
+                      index={index}
+                      onLearnMore={setSelectedDiscount}
+                    />
                   ))}
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
                   {discounts.slice(2, 4).map((discount: any, index: number) => (
-                    <DiscountCard key={discount.id} discount={discount} index={index + 2} />
+                    <DiscountCard
+                      key={discount.id}
+                      discount={discount}
+                      index={index + 2}
+                      onLearnMore={setSelectedDiscount}
+                    />
                   ))}
                 </div>
                 <div className="flex justify-center">
                   <div className="w-full md:w-1/2 lg:w-1/3">
-                    <DiscountCard discount={discounts[4]} index={4} />
+                    <DiscountCard
+                      discount={discounts[4]}
+                      index={4}
+                      onLearnMore={setSelectedDiscount}
+                    />
                   </div>
                 </div>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
                 {discounts.map((discount: any, index: number) => (
-                  <DiscountCard key={discount.id} discount={discount} index={index} />
+                  <DiscountCard
+                    key={discount.id}
+                    discount={discount}
+                    index={index}
+                    onLearnMore={setSelectedDiscount}
+                  />
                 ))}
               </div>
             )}
@@ -261,6 +361,14 @@ export default function Discounts() {
           </div>
         )}
 
+        <AnimatePresence>
+          {selectedDiscount && (
+            <DiscountModal
+              discount={selectedDiscount}
+              onClose={() => setSelectedDiscount(null)}
+            />
+          )}
+        </AnimatePresence>
       </div>
     </section>
   );

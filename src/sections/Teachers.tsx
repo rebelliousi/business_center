@@ -134,11 +134,11 @@ export default function Teachers() {
                       {getTranslated(teacher, "description", lang)}
                     </p>
 
-                    {/* LinkedIn Button */}
+                    {/* LinkedIn Button
                     <button className="inline-flex items-center gap-1.5 sm:gap-2 text-blue-600 hover:text-blue-700 font-semibold transition-colors text-xs sm:text-sm md:text-base">
                       <Linkedin className="w-4 h-4 sm:w-5 sm:h-5" />
                       <span>{t("teachers.viewProfile")}</span>
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               </motion.div>
