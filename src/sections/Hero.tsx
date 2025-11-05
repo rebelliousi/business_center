@@ -2,14 +2,41 @@ import { Button } from '../components/HeroButton';
 import { ArrowRight, Sparkles, Contact } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTranslation } from "react-i18next";
+import { useSiteStats } from '../hooks/useStats';
+import type { SiteStats } from '../hooks/useStats';
 
 export function Hero() {
   const { t } = useTranslation();
-  const stats = t("stats", { returnObjects: true }) as { value: string, label: string }[];
+
+  // SiteStats API'den veriyi alıyoruz
+  const { data, isLoading, isError } = useSiteStats();
+
+  // İstatistik alanları ve çeviri label'ları tanımlanır
+  const statDefs = [
+    { key: "teachers", label: t("teachersLabel", "Teachers") },
+    { key: "courses", label: t("coursesLabel", "Courses") },
+    { key: "success_rate", label: t("successRateLabel", "Success Rate") },
+    { key: "avg_rating", label: t("avgRatingLabel", "Avg. Rating") },
+  ];
+
+  // Görüntülenecek değerlerin tipini doğru işle
+  const formatValue = (key: keyof SiteStats, stats: SiteStats): string => {
+    const value = stats[key];
+    if (key === "success_rate") {
+      return typeof value === "number" ? `${value.toFixed(2)}%` : `${value}%`;
+    }
+    if (key === "avg_rating") {
+      return typeof value === "number" ? value.toFixed(2) : value;
+    }
+    return String(value ?? "");
+  };
+
+  // API'den gelen veri array ise ilk elemanı kullan, obje ise direkt kullan
+  const statsObj = Array.isArray(data) ? data[0] : data;
 
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-white">
-      {/* Animated background elements */}
+      {/* Arka plan efektleri */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 blue-gradient-mesh" />
         <motion.div
@@ -64,6 +91,7 @@ export function Hero() {
             <span className="text-blue-gradient">{t("heading2")}</span>
           </motion.h1>
 
+          {/* Açıklama */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -110,25 +138,37 @@ export function Hero() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8 max-w-3xl mx-auto px-2"
           >
-            {Array.isArray(stats) && stats.map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
-                className="blue-card rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 hover:shadow-lg hover:shadow-blue-500/20 transition-all"
-              >
-                <div className="text-2xl sm:text-3xl md:text-4xl mb-1 sm:mb-2 text-blue-gradient font-bold">
-                  {stat.value}
-                </div>
-                <div className="text-xs sm:text-sm text-slate-600 leading-tight">{stat.label}</div>
-              </motion.div>
-            ))}
+            {isLoading && (
+              statDefs.map((stat, index) => (
+                <motion.div key={stat.key} className="blue-card rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}>
+                  <div className="text-2xl sm:text-3xl md:text-4xl mb-1 sm:mb-2 text-blue-gradient font-semibold animate-pulse bg-blue-50 rounded w-16 h-7" />
+                  <div className="text-xs sm:text-sm text-slate-600 leading-tight">{stat.label}</div>
+                </motion.div>
+              ))
+            )}
+            {isError && (
+              <div className="col-span-4 text-red-500 font-bold text-center">Failed to load stats.</div>
+            )}
+            {!isLoading && !isError && statsObj && (
+              statDefs.map((stat, index) => (
+                <motion.div key={stat.key} initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
+                  className="blue-card rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 hover:shadow-lg hover:shadow-blue-500/20 transition-all">
+                  <div className="text-2xl sm:text-3xl md:text-4xl mb-1 sm:mb-2 text-blue-gradient font-bold">
+                    {formatValue(stat.key as keyof SiteStats, statsObj)}
+                  </div>
+                  <div className="text-xs sm:text-sm text-slate-600 leading-tight">{stat.label}</div>
+                </motion.div>
+              ))
+            )}
           </motion.div>
         </div>
       </div>
-
-      {/* Scroll indicator - Hidden on mobile */}
+      {/* Scroll indicator - Mobile'da gizli */}
       <motion.div
         animate={{ y: [0, 10, 0] }}
         transition={{ duration: 2, repeat: Infinity }}

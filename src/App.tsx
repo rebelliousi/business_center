@@ -14,47 +14,27 @@ const Teachers = lazy(() => import("./sections/Teachers"))
 const WhyChooseUs = lazy(() => import("./sections/WhyChooseUs"))
 
 const Spinner = () => (
-  <div className="flex items-center justify-center py-8">
-    <FaSpinner className="animate-spin text-blue-500" size={32} />
+  <div className="fixed inset-0 flex items-center justify-center bg-white/80 z-50">
+    <FaSpinner className="animate-spin text-blue-500" size={48} />
   </div>
 )
 
 export const App = () => {
   return (
-    <div>
-      <Suspense fallback={<Spinner />}>
+    <Suspense fallback={<Spinner />}>
+      <div>
         <Header />
-      </Suspense>
-      <Suspense fallback={<Spinner />}>
         <Hero />
-      </Suspense>
-      <Suspense fallback={<Spinner />}>
         <WhyChooseUs />
-      </Suspense>
-      <Suspense fallback={<Spinner />}>
         <Courses />
-      </Suspense>
-      <Suspense fallback={<Spinner />}>
         <Teachers />
-      </Suspense>
-      <Suspense fallback={<Spinner />}>
         <BusinessAdvice />
-      </Suspense>
-      <Suspense fallback={<Spinner />}>
         <InfiniteScroll />
-      </Suspense>
-      <Suspense fallback={<Spinner />}>
         <Discounts />
-      </Suspense>
-      <Suspense fallback={<Spinner />}>
         <About />
-      </Suspense>
-      <Suspense fallback={<Spinner />}>
         <Contact />
-      </Suspense>
-      <Suspense fallback={<Spinner />}>
         <Footer />
-      </Suspense>
-    </div>
+      </div>
+    </Suspense>
   )
 }
