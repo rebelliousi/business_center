@@ -27,6 +27,8 @@ import {
 } from 'lucide-react';
 import { useCourses } from '../hooks/useCourses';
 import { useTranslation, Trans } from 'react-i18next';
+import SmartCourseRatingBar from '../components/SmartCourseRatingBar';
+import { colorClasses } from '../components/colorClasses'; // <-- Dışarıdan import ettik!
 
 const iconList = [
   Star,
@@ -49,44 +51,11 @@ const iconList = [
   ClipboardList,
 ];
 
-const colorClasses = {
-  blue: {
-    bg: 'bg-blue-100',
-    text: 'text-blue-600',
-    hover: 'hover:border-blue-600',
-    gradient: 'from-blue-500 to-cyan-500',
-  },
-  green: {
-    bg: 'bg-green-100',
-    text: 'text-green-600',
-    hover: 'hover:border-green-600',
-    gradient: 'from-green-500 to-emerald-500',
-  },
-  orange: {
-    bg: 'bg-orange-100',
-    text: 'text-orange-600',
-    hover: 'hover:border-orange-600',
-    gradient: 'from-amber-500 to-orange-500',
-  },
-  purple: {
-    bg: 'bg-purple-100',
-    text: 'text-purple-600',
-    hover: 'hover:border-purple-600',
-    gradient: 'from-purple-500 to-pink-500',
-  },
-  yellow: {
-    bg: 'bg-yellow-100',
-    text: 'text-yellow-600',
-    hover: 'hover:border-yellow-600',
-    gradient: 'from-yellow-400 to-orange-400',
-  },
-  red: {
-    bg: 'bg-red-100',
-    text: 'text-red-600',
-    hover: 'hover:border-red-600',
-    gradient: 'from-rose-500 to-red-500',
-  },
-};
+// Renk kontrol fonksiyonunu güncelliyoruz!
+const allowedColors = Object.keys(colorClasses) as Array<keyof typeof colorClasses>;
+function getCourseColor(value: string): keyof typeof colorClasses {
+  return allowedColors.includes(value as any) ? (value as keyof typeof colorClasses) : "blue";
+}
 
 function getTranslated(course: any, field: string, lang: string) {
   return (
@@ -141,7 +110,8 @@ export default function Courses() {
 
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
           {displayedCourses?.map((course, index) => {
-            const colors = colorClasses[course.color as keyof typeof colorClasses] || colorClasses.blue;
+            const cardColorKey = getCourseColor(course.color);
+            const colors = colorClasses[cardColorKey];
             const Icon = iconList[index % iconList.length];
 
             return (
@@ -185,10 +155,8 @@ export default function Courses() {
                 </div>
 
                 <div className="flex items-center justify-between pt-3 sm:pt-4 border-t border-gray-100 relative z-10">
-                  <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 sm:w-5 sm:h-5 fill-yellow-400 text-yellow-400" />
-                    <span className="font-semibold text-sm sm:text-base text-gray-900">{course.rating}</span>
-                  </div>
+                  {/* Rating bar - renk uyumlu! */}
+                  <SmartCourseRatingBar courseId={course.id} compact color={cardColorKey} />
                   <button
                     className={`${colors.text} text-xs sm:text-sm font-semibold hover:underline`}
                     onClick={() => setSelectedCourse(course)}
@@ -265,8 +233,8 @@ export default function Courses() {
                     </span>
                   </div>
                   <div className="flex items-center gap-2 mb-3 sm:mb-4">
-                    <Star className="w-4 h-4 sm:w-5 sm:h-5 fill-yellow-400 text-yellow-400" />
-                    <span className="font-semibold text-sm sm:text-base text-gray-900">{selectedCourse.rating}</span>
+                   {/* Modal rating bar - renk uyumlu! */}
+                   <SmartCourseRatingBar courseId={selectedCourse.id} color={getCourseColor(selectedCourse.color)} />
                   </div>
                   <div className="text-lg sm:text-xl font-semibold text-blue-700 mb-2">
                     {t("courses.price")}:{" "}

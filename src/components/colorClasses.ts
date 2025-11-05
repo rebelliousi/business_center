@@ -1,0 +1,18 @@
+export const colorClasses = {
+  blue: { bg: 'bg-blue-100', text: 'text-blue-600', hover: 'hover:border-blue-600', gradient: 'from-blue-500 to-cyan-500' },
+  green: { bg: 'bg-green-100', text: 'text-green-600', hover: 'hover:border-green-600', gradient: 'from-green-500 to-emerald-500' },
+  orange: { bg: 'bg-orange-100', text: 'text-orange-600', hover: 'hover:border-orange-600', gradient: 'from-amber-500 to-orange-500' },
+  purple: { bg: 'bg-purple-100', text: 'text-purple-600', hover: 'hover:border-purple-600', gradient: 'from-purple-500 to-pink-500' },
+  yellow: { bg: 'bg-yellow-100', text: 'text-yellow-600', hover: 'hover:border-yellow-600', gradient: 'from-yellow-400 to-orange-400' },
+  red: { bg: 'bg-red-100', text: 'text-red-600', hover: 'hover:border-red-600', gradient: 'from-rose-500 to-red-500' },
+  pink: { bg: 'bg-pink-100', text: 'text-pink-600', hover: 'hover:border-pink-600', gradient: 'from-pink-500 to-red-400' },
+  indigo: { bg: 'bg-indigo-100', text: 'text-indigo-600', hover: 'hover:border-indigo-600', gradient: 'from-indigo-500 to-blue-600' },
+  teal: { bg: 'bg-teal-100', text: 'text-teal-600', hover: 'hover:border-teal-600', gradient: 'from-teal-400 to-emerald-500' },
+  cyan: { bg: 'bg-cyan-100', text: 'text-cyan-600', hover: 'hover:border-cyan-600', gradient: 'from-cyan-400 to-blue-400' },
+  lime: { bg: 'bg-lime-100', text: 'text-lime-600', hover: 'hover:border-lime-600', gradient: 'from-lime-400 to-green-400' },
+  amber: { bg: 'bg-amber-100', text: 'text-amber-600', hover: 'hover:border-amber-600', gradient: 'from-amber-500 to-yellow-500' },
+  emerald: { bg: 'bg-emerald-100', text: 'text-emerald-600', hover: 'hover:border-emerald-600', gradient: 'from-emerald-500 to-green-500' },
+  gray: { bg: 'bg-gray-100', text: 'text-gray-600', hover: 'hover:border-gray-500', gradient: 'from-gray-400 to-gray-600' },
+  rose: { bg: 'bg-rose-100', text: 'text-rose-600', hover: 'hover:border-rose-600', gradient: 'from-rose-400 to-pink-400' },
+  fuchsia: { bg: 'bg-fuchsia-100', text: 'text-fuchsia-600', hover: 'hover:border-fuchsia-600', gradient: 'from-fuchsia-400 to-pink-400' },
+};
