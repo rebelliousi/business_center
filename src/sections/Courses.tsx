@@ -27,6 +27,7 @@ import {
   Calendar,
 } from 'lucide-react';
 import { useCourses } from '../hooks/useCourses';
+import { useMultiCourseRatings } from '../hooks/useMultiCourseRating';
 import { useTranslation, Trans } from 'react-i18next';
 import SmartCourseRatingBar from '../components/SmartCourseRatingBar';
 import { colorClasses } from '../components/colorClasses';
@@ -68,6 +69,8 @@ function getTranslated(course: any, field: string, lang: string) {
 
 export default function Courses() {
   const { data: courses, isLoading, error } = useCourses();
+  const courseIds = courses?.map((c) => c.id) ?? [];
+  const { data: ratings = [] } = useMultiCourseRatings(courseIds);
   const [showAll, setShowAll] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<any | null>(null);
   const { t, i18n } = useTranslation();
@@ -86,7 +89,6 @@ export default function Courses() {
     return <div className="text-center text-red-500 py-12 sm:py-16 md:py-20 text-sm sm:text-base">{t("courses.error")}</div>;
   }
 
-  // Burada gösterilecek kursları belirliyoruz: max 8 veya tümü
   const displayedCourses = showAll ? courses : courses?.slice(0, 8);
 
   return (
@@ -109,12 +111,12 @@ export default function Courses() {
           </p>
         </motion.div>
 
-        {/* Responsive grid: mobile tek kolon, tablet 2, desktop 3 */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
           {displayedCourses?.map((course, index) => {
             const cardColorKey = getCourseColor(course.color);
             const colors = colorClasses[cardColorKey];
             const Icon = iconList[index % iconList.length];
+            const ratingData = ratings.find(r => r.course_id === course.id);
 
             return (
               <motion.div
@@ -153,7 +155,12 @@ export default function Courses() {
                   </div>
                 </div>
                 <div className="flex items-center justify-between pt-2 sm:pt-4 border-t border-gray-100 relative z-10">
-                  <SmartCourseRatingBar courseId={course.id} compact color={cardColorKey} />
+                  <SmartCourseRatingBar
+                    courseId={course.id}
+                    ratingData={ratingData}
+                    compact
+                    color={cardColorKey}
+                  />
                   <button
                     className={`${colors.text} text-xs sm:text-sm font-semibold hover:underline`}
                     onClick={() => setSelectedCourse(course)}
@@ -166,7 +173,6 @@ export default function Courses() {
           })}
         </div>
 
-        {/* Sadece 8'den fazla kurs varsa buton göster */}
         {courses && courses.length > 8 && (
           <div className="text-center mt-8 sm:mt-10 md:mt-12">
             <motion.button
@@ -185,7 +191,6 @@ export default function Courses() {
           </div>
         )}
 
-        {/* Modal responsive */}
         <AnimatePresence>
           {selectedCourse && (
             <motion.div
@@ -194,12 +199,10 @@ export default function Courses() {
               exit={{ opacity: 0 }}
               className="fixed inset-0 z-50 flex items-center justify-center p-1 sm:p-4"
             >
-              {/* Modal Background */}
               <div
                 className="absolute inset-0 bg-gradient-to-br from-blue-300/40 via-blue-900/50 to-blue-500/70 backdrop-blur-[2px]"
                 onClick={() => setSelectedCourse(null)}
               />
-              {/* Modal Content */}
               <motion.div
                 initial={{ scale: 0.96, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
@@ -230,7 +233,11 @@ export default function Courses() {
                     </span>
                   </div>
                   <div className="flex items-center gap-2 mb-3 sm:mb-4">
-                   <SmartCourseRatingBar courseId={selectedCourse.id} color={getCourseColor(selectedCourse.color)} />
+                   <SmartCourseRatingBar
+                      courseId={selectedCourse.id}
+                      ratingData={ratings.find(r => r.course_id === selectedCourse.id)}
+                      color={getCourseColor(selectedCourse.color)}
+                    />
                   </div>
                   <div className="text-base sm:text-xl font-semibold text-blue-700 mb-2">
                     {t("courses.price")}:{" "}

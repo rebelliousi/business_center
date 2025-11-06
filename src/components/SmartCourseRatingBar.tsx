@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Info } from 'lucide-react';
 import { useRateCourse } from '../hooks/useRateCourse';
-import { useCourseRatings } from '../hooks/useCourseRatingInfo';
 import { useTranslation } from 'react-i18next';
 import { colorClasses } from '../components/colorClasses';
 
@@ -13,12 +12,17 @@ type UserRatingInfo = {
 
 export interface SmartCourseRatingBarProps {
   courseId: number | string;
+  ratingData?: {
+    average_rating: number;
+    rating_count: number;
+  };
   compact?: boolean;
-  color?: keyof typeof colorClasses; 
+  color?: keyof typeof colorClasses;
 }
 
 export const SmartCourseRatingBar: React.FC<SmartCourseRatingBarProps> = ({
   courseId,
+  ratingData,
   compact = false,
   color = "blue"
 }) => {
@@ -28,8 +32,8 @@ export const SmartCourseRatingBar: React.FC<SmartCourseRatingBarProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const colors = colorClasses[color] || colorClasses.blue;
-
   const [isMobileDevice, setIsMobileDevice] = useState(false);
+
   useEffect(() => {
     const checkIsMobile = () =>
       typeof window !== 'undefined' && window.matchMedia('(max-width: 640px)').matches;
@@ -39,12 +43,8 @@ export const SmartCourseRatingBar: React.FC<SmartCourseRatingBarProps> = ({
     return () => window.removeEventListener('resize', cb);
   }, []);
 
-  const { data: ratings = [], refetch: refetchRatings } = useCourseRatings(courseId);
-
-  const averageRating = ratings.length
-    ? ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length
-    : 0;
-  const totalVotes = ratings.length;
+  const averageRating = ratingData?.average_rating ?? 0;
+  const totalVotes = ratingData?.rating_count ?? 0;
 
   const { t, i18n } = useTranslation();
   const lang = i18n.language || "en";
@@ -66,7 +66,7 @@ export const SmartCourseRatingBar: React.FC<SmartCourseRatingBarProps> = ({
     const isInteractive = !userRating && !isSubmitting;
     return (
       <div className="flex items-center gap-0.5">
-        {[1,2,3,4,5].map(i => (
+        {[1, 2, 3, 4, 5].map(i => (
           <motion.button
             key={i}
             disabled={!isInteractive}
@@ -100,8 +100,8 @@ export const SmartCourseRatingBar: React.FC<SmartCourseRatingBarProps> = ({
     setIsSubmitting(true);
     try {
       await rateCourse.mutateAsync({ course: Number(courseId), rating });
-      await refetchRatings();
-    } catch (e) {}
+      // NOT: Multi-rating güncellenmesi için parentda hook refetch edilebilir!
+    } catch (e) { }
     const ratingInfo: UserRatingInfo = {
       rating,
       created_at: new Date().toISOString()
@@ -128,7 +128,7 @@ export const SmartCourseRatingBar: React.FC<SmartCourseRatingBarProps> = ({
             {t('courses.your_rating')}
           </div>
           <div className="flex items-center space-x-1">
-            {[1,2,3,4,5].map(i => (
+            {[1, 2, 3, 4, 5].map(i => (
               <span
                 key={i}
                 className={`text-base ${
@@ -147,7 +147,7 @@ export const SmartCourseRatingBar: React.FC<SmartCourseRatingBarProps> = ({
           <div className="text-gray-600 text-[11px] text-center leading-tight pt-1 border-t border-gray-200 w-full">
             {t("courses.rating_date", {
               date: new Date(userRating!.created_at)
-                .toLocaleDateString(lang, {month:'short', day:'numeric', year:'numeric'})
+                .toLocaleDateString(lang, { month: 'short', day: 'numeric', year: 'numeric' })
             })}
           </div>
         </div>
@@ -215,7 +215,7 @@ export const SmartCourseRatingBar: React.FC<SmartCourseRatingBarProps> = ({
           </motion.span>
         )}
         {rateCourse.isError && (
-          <motion.span 
+          <motion.span
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="text-red-400 text-[10px] font-medium"
@@ -272,12 +272,12 @@ export const SmartCourseRatingBar: React.FC<SmartCourseRatingBarProps> = ({
         </motion.span>
       )}
       {rateCourse.isError && (
-        <motion.span 
+        <motion.span
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="text-red-400 text-xs font-medium"
         >
-          {t("courses.errorr")}
+          {t("courses.error")}
         </motion.span>
       )}
     </div>
