@@ -100,14 +100,16 @@ export const SmartCourseRatingBar: React.FC<SmartCourseRatingBarProps> = ({
     setIsSubmitting(true);
     try {
       await rateCourse.mutateAsync({ course: Number(courseId), rating });
-      // NOT: Multi-rating güncellenmesi için parentda hook refetch edilebilir!
-    } catch (e) { }
-    const ratingInfo: UserRatingInfo = {
-      rating,
-      created_at: new Date().toISOString()
-    };
-    localStorage.setItem(`course_rating_${courseId}`, JSON.stringify(ratingInfo));
-    setUserRating(ratingInfo);
+      // Başarılıysa kaydet!
+      const ratingInfo: UserRatingInfo = {
+        rating,
+        created_at: new Date().toISOString()
+      };
+      localStorage.setItem(`course_rating_${courseId}`, JSON.stringify(ratingInfo));
+      setUserRating(ratingInfo);
+    } catch (e) {
+      // Hata varsa kaydetme!
+    }
     setIsSubmitting(false);
   };
 
