@@ -15,8 +15,7 @@ export function Hero() {
   const statDefs = [
     { key: "teachers", label: t("teachersLabel", "Teachers") },
     { key: "courses", label: t("coursesLabel", "Courses") },
-    { key: "success_rate", label: t("successRateLabel", "Success Rate") },
-    { key: "avg_rating", label: t("avgRatingLabel", "Avg. Rating") },
+   
   ];
 
   // Görüntülenecek değerlerin tipini doğru işle
@@ -131,12 +130,12 @@ export function Hero() {
             </Button>
           </motion.div>
 
-          {/* Stats */}
+          {/* Stats - Centered */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8 max-w-3xl mx-auto px-2"
+            className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 md:gap-8 lg:gap-12 max-w-2xl mx-auto px-2"
           >
             {isLoading && (
               statDefs.map((stat, index) => (

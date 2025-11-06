@@ -155,12 +155,12 @@ export default function Courses() {
                   </div>
                 </div>
                 <div className="flex items-center justify-between pt-2 sm:pt-4 border-t border-gray-100 relative z-10">
-                  <SmartCourseRatingBar
+                  {/* <SmartCourseRatingBar
                     courseId={course.id}
                     ratingData={ratingData}
                     compact
                     color={cardColorKey}
-                  />
+                  /> */}
                   <button
                     className={`${colors.text} text-xs sm:text-sm font-semibold hover:underline`}
                     onClick={() => setSelectedCourse(course)}
