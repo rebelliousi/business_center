@@ -1,1 +1,1 @@
-export const host='http://34.135.242.155/api/v1/school/'
+export const host='http://35.188.187.37/api/v1/school/'
